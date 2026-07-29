@@ -23,7 +23,7 @@
         @test couette.nl.force isa CoriolisForce
         @test couette.ln.force isa CoriolisForce
         @test couette.nl.force.Ro == 0.25
-        @test default_couette.nl.force isa CoriolisForce && iszero(default_couette.nl.force.Ro)
+        @test default_couette.nl.force isa NoForce
 
         poiseuille = PlanePoiseuilleFlow(g, 400; f=1.5, Ro=0.25,
                                          fftw_flags=FFTW.ESTIMATE, dealias=false)
@@ -40,7 +40,7 @@
                                        dealias=false)
         rotation_only = PlanePoiseuilleFlow(g, 400; f=0, Ro=0.25,
                                             fftw_flags=FFTW.ESTIMATE, dealias=false)
-        @test unforced.nl.force isa CoriolisForce && iszero(unforced.nl.force.Ro)
+        @test unforced.nl.force isa NoForce
         @test rotation_only.nl.force isa CoriolisForce
 
         continuous = PlaneCouetteFlow(g, 400; base_flow, mode=AdjointContinuous(),

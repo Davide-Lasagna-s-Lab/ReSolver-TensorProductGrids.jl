@@ -108,7 +108,7 @@ Every nonzero base-flow component must have the bounded shape `(Ny,)`.
 # Keyword arguments
 
 - `base_flow`: three-component wall-normal tuple added to the steady zero Fourier mode.
-- `Ro`: signed spanwise rotation number; zero makes the Coriolis contribution identically zero.
+- `Ro`: signed spanwise rotation number; zero omits the Coriolis force.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.
 - `dealias`: whether nonlinear products use padded Fourier resolutions.
@@ -128,7 +128,8 @@ function PlaneCouetteFlow(g::AbstractChannelGrid, Re::Real;
                           base_flow=(plane_couette_base(g), nothing, nothing), Ro::Real=0,
                           mode=AdjointDiscrete(), fftw_flags=FFTW.EXHAUSTIVE,
                           dealias::Bool=true)
-    force = CoriolisForce(eltype(g)(Ro))
+    Ro = eltype(g)(Ro)
+    force = iszero(Ro) ? NoForce() : CoriolisForce(Ro)
     return _plane_channel_flow(g, Re, base_flow, force; mode, fftw_flags, dealias)
 end
 
@@ -203,7 +204,7 @@ from that gradient or the mean wall shear.
 
 - `base_flow`: three-component wall-normal tuple added to the steady zero Fourier mode.
 - `f`: signed uniform streamwise forcing; positive values drive flow in `+x`.
-- `Ro`: signed spanwise rotation number; zero makes the Coriolis contribution identically zero.
+- `Ro`: signed spanwise rotation number; zero omits the Coriolis force.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.
 - `dealias`: whether nonlinear products use padded Fourier resolutions.
@@ -242,7 +243,9 @@ function _plane_channel_flow(g::AbstractChannelGrid, Re::Real, base_flow, force;
 end
 
 function _poiseuille_force(Ro::Real, f::Real)
-    iszero(f) && return CoriolisForce(Ro)
+    if iszero(f)
+        return iszero(Ro) ? NoForce() : CoriolisForce(Ro)
+    end
     pressure = ConstantBodyForce(f; i=1)
     return iszero(Ro) ? pressure : CompoundForcing(pressure, CoriolisForce(Ro))
 end
