@@ -74,10 +74,3 @@ function _lid_driven_cavity_xy_base(g::AbstractGrid)
     dH = @. 3η^2 - 2η
     return F * transpose(dH), -dF * transpose(H)
 end
-
-# =============================================================================================== #
-# Reusable forcing selection                                                                     #
-# =============================================================================================== #
-
-"""Return no forcing for a zero amplitude and a constant body force otherwise."""
-_constant_body_force(value::Real, i::Int) = iszero(value) ? NoForce() : ConstantBodyForce(value; i)

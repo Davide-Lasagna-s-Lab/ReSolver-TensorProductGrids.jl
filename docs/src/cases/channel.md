@@ -45,8 +45,12 @@ acceleration, then
 f=\frac{Gh}{U_{ref}^2},\qquad
 \partial_t\boldsymbol{u}+(\boldsymbol{u}\boldsymbol{\cdot}\nabla)\boldsymbol{u}
 =-\nabla p+\frac{1}{Re}\nabla^2\boldsymbol{u}
-+f\boldsymbol{e}_x+\boldsymbol{f}_{Ro}.
++f\boldsymbol{e}_x.
 ```
+
+This constructor represents a prescribed, nonzero pressure gradient: `f` may have either sign,
+but `f=0` throws an `ArgumentError`. Rotation is available for [`PlaneCouetteFlow`](@ref), not for
+`PlanePoiseuilleFlow`.
 
 For a unidirectional laminar equilibrium ``U=A(1-y^2)``, the streamwise momentum balance gives
 ``A=Re\,f/2``. Consequently, friction-velocity scaling uses
@@ -86,17 +90,20 @@ reference about which the equations are evaluated or linearised; an identically 
 may be written as `nothing`. The tuple does not itself constrain any perturbation value. A basis or
 residual formulation must enforce homogeneous wall conditions consistent with the chosen lifting.
 
-For prescribed bulk velocity, use `f=0`, place the prescribed mean profile in `base_flow`, and
-require every streamwise component in the spatially homogeneous sector to have zero
-quadrature-weighted wall-normal mean:
+[`PlanePoiseuilleFlow`](@ref) is specifically the prescribed-pressure-gradient case and therefore
+is not the constructor for a prescribed-bulk-velocity formulation. When bulk velocity is fixed,
+assemble the unforced primitive equations directly, place the prescribed mean profile in
+`base_flow`, and require every streamwise component in the spatially homogeneous sector to have
+zero quadrature-weighted wall-normal mean:
 
 ```math
 \sum_j w_j\,\widehat\phi_x(0,y_j,0,k_t)=0.
 ```
 
-Apply this constraint to every temporal harmonic when bulk velocity is fixed at every time. The
-pressure gradient then acts as an eliminated Lagrange multiplier rather than a represented body
-force; recover ``Re_\tau`` from that gradient or from the mean wall shear.
+Apply this constraint to every temporal harmonic when bulk velocity is fixed at every time. In
+that distinct formulation, the pressure gradient acts as an eliminated Lagrange multiplier rather
+than a represented `ConstantBodyForce`; recover ``Re_\tau`` from that gradient or from the mean
+wall shear.
 
 `mode=AdjointDiscrete()` selects the quadrature-consistent discrete adjoint of the linearised
 operator, while `AdjointContinuous()` selects the discretised continuous-adjoint equations.

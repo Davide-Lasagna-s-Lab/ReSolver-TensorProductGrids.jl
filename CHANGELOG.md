@@ -10,7 +10,8 @@ All notable changes to ReSolverRectangularGrids.jl will be documented in this fi
 - Lazy `RectangularProductWeights` for allocation-free tensor-product quadrature.
 - Channel, square two-dimensional cavity, cubic three-dimensional cavity, and square-duct grid constructors; every square or cubic bounded layout reuses one FDGrids discretisation in all symmetric directions.
 - Plane Couette, plane Poiseuille, lid-driven-cavity, and pressure-driven square-duct equation factories, including canonical smooth divergence-free moving-lid liftings.
-- Reusable constant-body-force and Coriolis forcing policies.
+- Reusable Coriolis and nonzero constant-body-force policies, with explicit rejection of inert zero
+  body forces.
 - Analytical derivative, Laplacian, norm, shift, product-quadrature, and discrete-adjoint tests for every layout.
 - Symmetric executable examples, a full Documenter manual, public-repository metadata, and continuous integration.
 

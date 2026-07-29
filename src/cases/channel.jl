@@ -139,21 +139,19 @@ end
 @doc raw"""
     PlanePoiseuilleFlow(g::AbstractChannelGrid, Re::Real;
                         base_flow=(plane_poiseuille_base(g), nothing, nothing),
-                        f::Real=1, Ro::Real=0, mode=AdjointDiscrete(),
-                        fftw_flags=FFTW.EXHAUSTIVE, dealias=true) -> ProjectedNSE
+                        f::Real=1, mode=AdjointDiscrete(), fftw_flags=FFTW.EXHAUSTIVE,
+                        dealias=true) -> ProjectedNSE
 
 Construct the pressure-driven plane Poiseuille equations
 
 ```math
 \partial_t \boldsymbol{u} + (\boldsymbol{u}\cdot\nabla)\boldsymbol{u}
-= -\nabla p + Re^{-1}\nabla^2\boldsymbol{u} + f\,\boldsymbol{e}_x
-  + \boldsymbol{f}_{Ro},
+= -\nabla p + Re^{-1}\nabla^2\boldsymbol{u} + f\,\boldsymbol{e}_x,
 \qquad \nabla\cdot\boldsymbol{u}=0,
 ```
 
-using the Reynolds and rotation-number conventions of [`PlaneCouetteFlow`](@ref). For dimensional
-mean pressure `\bar p^*`, density `ρ`, and positive `x` downstream, the signed uniform acceleration
-is
+using the Reynolds-number convention of [`PlaneCouetteFlow`](@ref). For dimensional mean pressure
+`\bar p^*`, density `ρ`, and positive `x` downstream, the signed uniform acceleration is
 
 ```math
 f=-\frac{h}{\rho U_{ref}^2}\frac{d\bar p^*}{dx^*}.
@@ -183,8 +181,10 @@ Re_\tau=Re\sqrt{|f|},
 or, for positive forcing, choose `f=(Reτ/Re)^2`. The unscaled default profile has bulk velocity
 `2/3`; use `3/2*(1-y²)` when the chosen bulk scale is one.
 
-For prescribed bulk velocity, pass `f=0` and constrain the streamwise component of every basis
-mode in the zero spatial `(k_x,k_z)=(0,0)` sector to have zero quadrature-weighted mean:
+This constructor represents pressure-driven flow and therefore requires `f` to be nonzero. A
+prescribed-bulk-velocity formulation instead uses `NSEBase.construct_equations` with `NoForce()`
+and constrains the streamwise component of every basis mode in the zero spatial
+`(k_x,k_z)=(0,0)` sector to have zero quadrature-weighted mean:
 
 ```math
 \sum_j w_j\,\widehat{\phi}_x(0,y_j,0,k_t)=0.
@@ -202,15 +202,15 @@ from that gradient or the mean wall shear.
 # Keyword arguments
 
 - `base_flow`: three-component wall-normal tuple added to the steady zero Fourier mode.
-- `f`: signed uniform streamwise forcing; positive values drive flow in `+x`.
-- `Ro`: signed spanwise rotation number; zero omits the Coriolis force.
+- `f`: nonzero signed uniform streamwise forcing; positive values drive flow in `+x`. Zero throws
+  an `ArgumentError`.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.
 - `dealias`: whether nonlinear products use padded Fourier resolutions.
 
 # Returns
 
-An `NSEBase.ProjectedNSE` for three velocity components with optional pressure and Coriolis forces.
+An `NSEBase.ProjectedNSE` for three velocity components with constant streamwise forcing.
 
 # Example
 
@@ -224,16 +224,9 @@ equations = PlanePoiseuilleFlow(g, Reτ; base_flow=(U, nothing, nothing), f=1,
 """
 function PlanePoiseuilleFlow(g::AbstractChannelGrid, Re::Real;
                              base_flow=(plane_poiseuille_base(g), nothing, nothing),
-                             f::Real=1, Ro::Real=0, mode=AdjointDiscrete(),
+                             f::Real=1, mode=AdjointDiscrete(),
                              fftw_flags=FFTW.EXHAUSTIVE, dealias::Bool=true)
-    if iszero(Ro)
-        force = iszero(f) ? NoForce() : ConstantBodyForce(eltype(g)(f); i=1)
-    elseif iszero(f)
-        force = CoriolisForce(eltype(g)(Ro))
-    else
-        force = CompoundForcing(ConstantBodyForce(eltype(g)(f); i=1),
-                                CoriolisForce(eltype(g)(Ro)))
-    end
+    force = ConstantBodyForce(eltype(g)(f); i=1)
     return _plane_channel_flow(g, Re, base_flow, force; mode, fftw_flags, dealias)
 end
 

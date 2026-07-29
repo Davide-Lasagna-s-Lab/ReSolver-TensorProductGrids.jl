@@ -20,7 +20,9 @@ Re=\frac{U_{ref}L}{\nu},\qquad f=\frac{GL}{U_{ref}^2}.
 The constant force is stored only at zero `(z,t)` wavenumber, which is exactly a spatially and
 temporally uniform acceleration in physical space. It acts on component three in forward residual
 evaluations. Because it is independent of the state, its linearisation—and hence its continuous
-and discrete adjoint action—is zero.
+and discrete adjoint action—is zero. `SquareDuctFlow` requires this pressure-gradient amplitude to
+be nonzero, so `f=0` throws an `ArgumentError`; use a separately assembled unforced formulation
+when no prescribed pressure gradient is intended.
 
 ## Friction Reynolds number
 

@@ -19,10 +19,8 @@
         @test equations.nl.force.value == 1.25
         @test equations.nl.force.i == 3
 
-        unforced = SquareDuctFlow(g, 500; f=0, fftw_flags=FFTW.ESTIMATE,
-                                  dealias=false)
-        @test unforced.nl.force isa NoForce
-        @test unforced.ln.force isa NoForce
+        @test_throws ArgumentError SquareDuctFlow(
+            g, 500; f=0, fftw_flags=FFTW.ESTIMATE, dealias=false)
 
         continuous = SquareDuctFlow(g, 500; base_flow, mode=AdjointContinuous(),
                                     fftw_flags=FFTW.ESTIMATE, dealias=false)

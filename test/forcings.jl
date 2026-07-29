@@ -45,6 +45,7 @@
         @test iszero(parent(out[1]))
         @test iszero(parent(out[2]))
         @test iszero(parent(out[3]))
+        @test_throws ArgumentError ConstantBodyForce(0; i=1)
         @test_throws ArgumentError ConstantBodyForce(1; i=4)(out, u, Forward())
     end
 end

@@ -27,7 +27,9 @@ quadrature. The `Ro` convention used by the channel cases is documented under
 [`ConstantBodyForce`](@ref) adds a scalar value to component `i` at the zero mode of every Fourier
 direction. The selected slice retains every bounded-grid point, so this single spectral mode
 represents a uniform physical-space force. For example, channel pressure forcing uses `i=1`, while
-square-duct forcing uses `i=3` because physical streamwise velocity is `w` there.
+square-duct forcing uses `i=3` because physical streamwise velocity is `w` there. Its amplitude
+must be nonzero: constructing `ConstantBodyForce(0)` throws an `ArgumentError`. Use `NoForce()`
+when the equations have no body force instead of storing an inert constant-force policy.
 
 If ``\mathcal F(\boldsymbol{u})=\boldsymbol{c}`` is independent of the state, then
 
@@ -67,9 +69,10 @@ pressure(out, u, AdjointDiscrete())
 (rotation=typeof(rotation), pressure=typeof(pressure))
 ```
 
-Forces accumulate into `out`; they do not clear it first. `ConstantBodyForce` validates `i` against
-the number of components when it is applied. Use NSEBase's `CompoundForcing` to combine policies,
-as [`PlanePoiseuilleFlow`](@ref) does when pressure forcing and rotation are both active.
+Forces accumulate into `out`; they do not clear it first. `ConstantBodyForce` rejects a zero
+amplitude when it is constructed and validates `i` against the number of components when it is
+applied. Use NSEBase's `CompoundForcing` when defining a custom case that requires multiple
+independent forcing policies.
 
 ```@docs
 CoriolisForce

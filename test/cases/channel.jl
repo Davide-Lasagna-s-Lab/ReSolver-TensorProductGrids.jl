@@ -25,23 +25,19 @@
         @test couette.nl.force.Ro == 0.25
         @test default_couette.nl.force isa NoForce
 
-        poiseuille = PlanePoiseuilleFlow(g, 400; f=1.5, Ro=0.25,
-                                         fftw_flags=FFTW.ESTIMATE, dealias=false)
+        poiseuille = PlanePoiseuilleFlow(g, 400; f=1.5, fftw_flags=FFTW.ESTIMATE,
+                                         dealias=false)
         @test poiseuille.base == (poiseuille_base, nothing, nothing)
-        @test poiseuille.nl.force isa CompoundForcing
-        pressure, rotation = poiseuille.nl.force.forces
-        @test pressure isa ConstantBodyForce
-        @test pressure.value == 1.5
-        @test pressure.i == 1
-        @test rotation isa CoriolisForce
-        @test rotation.Ro == 0.25
-
-        unforced = PlanePoiseuilleFlow(g, 400; f=0, fftw_flags=FFTW.ESTIMATE,
-                                       dealias=false)
-        rotation_only = PlanePoiseuilleFlow(g, 400; f=0, Ro=0.25,
-                                            fftw_flags=FFTW.ESTIMATE, dealias=false)
-        @test unforced.nl.force isa NoForce
-        @test rotation_only.nl.force isa CoriolisForce
+        @test poiseuille.nl.force isa ConstantBodyForce
+        @test poiseuille.ln.force isa ConstantBodyForce
+        @test poiseuille.nl.force.value == 1.5
+        @test poiseuille.nl.force.i == 1
+        @test poiseuille.ln.force.value == 1.5
+        @test poiseuille.ln.force.i == 1
+        @test_throws ArgumentError PlanePoiseuilleFlow(
+            g, 400; f=0, fftw_flags=FFTW.ESTIMATE, dealias=false)
+        @test_throws MethodError PlanePoiseuilleFlow(
+            g, 400; Ro=0.25, fftw_flags=FFTW.ESTIMATE, dealias=false)
 
         continuous = PlaneCouetteFlow(g, 400; base_flow, mode=AdjointContinuous(),
                                       fftw_flags=FFTW.ESTIMATE, dealias=false)

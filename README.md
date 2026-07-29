@@ -73,7 +73,7 @@ Files under `src/grids/` define numerical layouts. Files under `src/cases/` defi
 
 - `PlaneCouetteFlow` and `PlanePoiseuilleFlow` use `ChannelGrid`;
 - `LidDrivenCavity2DFlow` and `LidDrivenCavity3DFlow` provide canonical smooth moving-lid liftings and accept explicit replacements through `base_flow`;
-- `SquareDuctFlow` applies a constant pressure-gradient force in physical streamwise `z`.
+- `SquareDuctFlow` applies a required, nonzero pressure-gradient force in physical streamwise `z`.
 
 The constructors return NSEBase `ProjectedNSE` operators, but they do not silently impose wall values. For an inhomogeneous wall condition, put the prescribed steady contribution in `base_flow` and make the perturbation basis satisfy homogeneous boundary conditions. The manual explains [coordinates and numerical conventions](docs/src/conventions.md), including the precise quadrature-weighted discrete adjoint.
 

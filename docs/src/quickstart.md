@@ -66,4 +66,5 @@ typeof(equations.nl)
 
 `base_flow` is a steady zero-mode lifting. It supplies the total streamwise reference profile; perturbation modes should satisfy homogeneous no-slip conditions at the walls. `dealias=true` is recommended for production nonlinear evaluations. It is disabled here only to keep the documentation example small.
 
-Continue with [Channel flows](@ref) for Couette, rotation, pressure-gradient, bulk-flow, and Reynolds-number conventions.
+Continue with [Channel flows](@ref) for Couette rotation, Poiseuille pressure-gradient,
+prescribed-bulk-flow, and Reynolds-number conventions.

@@ -7,8 +7,7 @@ import NSEBase
 import NSEBase: growto, points, wavenumber_scale, weights
 
 using NSEBase: AbstractGrid, AdjointContinuous, AdjointDiscrete, CartesianPrimitive2D,
-               CartesianPrimitive3D, CompoundForcing,
-               FFTW, FTField, Forward, NoForce, VectorField, WaveNumberVector,
+               CartesianPrimitive3D, FFTW, FTField, Forward, NoForce, VectorField, WaveNumberVector,
                construct_equations, fft_storage_dims, grid, inhomogeneous_storage_dims
 
 export RectangularGrid, RectangularProductWeights

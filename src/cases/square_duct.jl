@@ -64,14 +64,15 @@ it is not the conventional perimeter-averaged friction velocity.
 # Keyword arguments
 
 - `base_flow`: three-component cross-section tuple added to the steady zero Fourier mode.
-- `f`: signed uniform forcing amplitude in the physical streamwise component `w`.
+- `f`: nonzero signed uniform forcing amplitude in the physical streamwise component `w`. Zero
+  throws an `ArgumentError`.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.
 - `dealias`: whether nonlinear products use padded streamwise and temporal Fourier resolutions.
 
 # Returns
 
-An `NSEBase.ProjectedNSE` for three velocity components with optional streamwise forcing.
+An `NSEBase.ProjectedNSE` for three velocity components with constant streamwise forcing.
 
 # Example
 
@@ -86,7 +87,7 @@ function SquareDuctFlow(g::AbstractSquareDuctGrid, Re::Real;
                         dealias::Bool=true)
     _validate_equal_bounded_lengths(g, Val(2), "square duct")
     _validate_base_flow(g, base_flow, Val(3), "square duct")
-    force = _constant_body_force(eltype(g)(f), 3)
+    force = ConstantBodyForce(eltype(g)(f); i=3)
     return construct_equations(g, Re, base_flow, CartesianPrimitive3D();
                                force, mode, flags=fftw_flags, dealias)
 end

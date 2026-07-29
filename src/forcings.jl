@@ -55,11 +55,11 @@ end
 # =============================================================================================== #
 
 """
-    ConstantBodyForce(value=1; i=1)
+    ConstantBodyForce(value::Real=1; i::Int=1)
 
-Construct a spatially constant body force applied to one velocity component. The force is added
-only at the zero wavenumber of every Fourier direction; the selected slice still contains every
-finite-difference point, so the value is uniform throughout the bounded coordinates.
+Construct a nonzero, spatially constant body force applied to one velocity component. The force is
+added only at the zero wavenumber of every Fourier direction; the selected slice still contains
+every finite-difference point, so the value is uniform throughout the bounded coordinates.
 
 `i` is the one-based index of the component in the `VectorField` passed to the force. For a channel
 state ordered as `(u, v, w)`, streamwise forcing uses `i=1`. A square duct is also stored as
@@ -70,7 +70,8 @@ unchanged.
 
 # Arguments
 
-- `value`: constant force amplitude.
+- `value`: nonzero constant force amplitude. Zero throws an `ArgumentError`; use `NoForce()` when
+  no force is required.
 
 # Keyword arguments
 
@@ -80,12 +81,17 @@ unchanged.
 
 A callable constant forcing policy.
 """
-struct ConstantBodyForce{T}
+struct ConstantBodyForce{T<:Real}
     value::T
     i::Int
+
+    function ConstantBodyForce(value::T, i::Int) where {T<:Real}
+        iszero(value) && throw(ArgumentError("constant body-force value must be nonzero"))
+        return new{T}(value, i)
+    end
 end
 
-ConstantBodyForce(value=1; i=1) = ConstantBodyForce(value, i)
+ConstantBodyForce(value::Real=1; i::Int=1) = ConstantBodyForce(value, i)
 
 function (force::ConstantBodyForce)(out::VectorField{N, <:FTField}, _, ::Forward) where {N}
     # Validate the requested component against the field on which the force is applied.
