@@ -32,8 +32,8 @@ Ro=\frac{2\Omega h}{U_{ref}},\qquad
 =Ro\,(v,-u,0).
 ```
 
-The sign of `Ro` therefore determines the sense of rotation. Passing `Ro=0` removes the Coriolis
-policy entirely.
+The sign of `Ro` therefore determines the sense of rotation. Passing `Ro=0` makes the Coriolis
+contribution identically zero while retaining the same concrete forcing policy.
 
 ## Plane Poiseuille flow
 
