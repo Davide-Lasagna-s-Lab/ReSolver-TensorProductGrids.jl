@@ -128,8 +128,7 @@ function PlaneCouetteFlow(g::AbstractChannelGrid, Re::Real;
                           base_flow=(plane_couette_base(g), nothing, nothing), Ro::Real=0,
                           mode=AdjointDiscrete(), fftw_flags=FFTW.EXHAUSTIVE,
                           dealias::Bool=true)
-    Ro = eltype(g)(Ro)
-    force = iszero(Ro) ? NoForce() : CoriolisForce(Ro)
+    force = iszero(Ro) ? NoForce() : CoriolisForce(eltype(g)(Ro))
     return _plane_channel_flow(g, Re, base_flow, force; mode, fftw_flags, dealias)
 end
 
@@ -227,7 +226,14 @@ function PlanePoiseuilleFlow(g::AbstractChannelGrid, Re::Real;
                              base_flow=(plane_poiseuille_base(g), nothing, nothing),
                              f::Real=1, Ro::Real=0, mode=AdjointDiscrete(),
                              fftw_flags=FFTW.EXHAUSTIVE, dealias::Bool=true)
-    force = _poiseuille_force(eltype(g)(Ro), eltype(g)(f))
+    if iszero(Ro)
+        force = iszero(f) ? NoForce() : ConstantBodyForce(eltype(g)(f); i=1)
+    elseif iszero(f)
+        force = CoriolisForce(eltype(g)(Ro))
+    else
+        force = CompoundForcing(ConstantBodyForce(eltype(g)(f); i=1),
+                                CoriolisForce(eltype(g)(Ro)))
+    end
     return _plane_channel_flow(g, Re, base_flow, force; mode, fftw_flags, dealias)
 end
 
@@ -240,12 +246,4 @@ function _plane_channel_flow(g::AbstractChannelGrid, Re::Real, base_flow, force;
     _validate_base_flow(g, base_flow, Val(3), "channel")
     return construct_equations(g, Re, base_flow, CartesianPrimitive3D();
                                force, mode, flags=fftw_flags, dealias)
-end
-
-function _poiseuille_force(Ro::Real, f::Real)
-    if iszero(f)
-        return iszero(Ro) ? NoForce() : CoriolisForce(Ro)
-    end
-    pressure = ConstantBodyForce(f; i=1)
-    return iszero(Ro) ? pressure : CompoundForcing(pressure, CoriolisForce(Ro))
 end
