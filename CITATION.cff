@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use ReSolver-RectangularGrids.jl in research, please cite this software using the metadata below."
+type: software
+title: "ReSolver-RectangularGrids.jl"
+abstract: "Rectangular product grids and canonical incompressible-flow cases for NSEBase.jl."
+authors:
+  - family-names: Lasagna
+    given-names: Davide
+    email: davide.lasagna@soton.ac.uk
+  - family-names: Burton
+    given-names: Thomas
+    email: tburton5572@gmail.com
+repository-code: "https://github.com/Davide-Lasagna-s-Lab/ReSolver-RectangularGrids.jl"
+url: "https://github.com/Davide-Lasagna-s-Lab/ReSolver-RectangularGrids.jl"
+license: MIT
+keywords:
+  - Julia
+  - computational fluid dynamics
+  - incompressible flow
+  - rectangular grids
+  - spectral methods
+  - finite differences

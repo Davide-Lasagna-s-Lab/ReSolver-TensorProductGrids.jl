@@ -1,0 +1,48 @@
+name: Feature request
+description: Propose a focused improvement to the package
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing an improvement. Explain the physical or numerical use case before describing a particular implementation.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues for related proposals.
+          required: true
+        - label: This request concerns rectangular grids or their canonical incompressible-flow cases.
+          required: true
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation and use case
+      description: What problem would this solve, and who would benefit?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the public behavior or API you would like, including defaults and conventions where relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Explain current workarounds or alternative designs you considered.
+  - type: textarea
+    id: validation
+    attributes:
+      label: Validation strategy
+      description: How could the behavior be checked analytically or numerically?
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add references, equations, sketches, or links that clarify the proposal.

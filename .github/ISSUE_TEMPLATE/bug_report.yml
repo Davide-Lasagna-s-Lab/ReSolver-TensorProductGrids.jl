@@ -1,0 +1,69 @@
+name: Bug report
+description: Report incorrect behavior or an unexpected numerical result
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping improve ReSolver-RectangularGrids.jl. Please provide enough detail to reproduce the behavior.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues for the same problem.
+          required: true
+        - label: I can reproduce this problem with the current default branch.
+          required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: What happened, and what result did you expect instead?
+      placeholder: Describe the observed and expected behavior, including any numerical discrepancy.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducer
+    attributes:
+      label: Minimal reproducer
+      description: Provide the smallest complete Julia program that demonstrates the problem.
+      render: julia
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output or stack trace
+      description: Paste the complete error, stack trace, or relevant numerical output.
+      render: shell
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Run `versioninfo()` and `using Pkg; Pkg.status()` in the failing environment and paste both outputs.
+      render: shell
+    validations:
+      required: true
+  - type: dropdown
+    id: case
+    attributes:
+      label: Affected grid or case
+      options:
+        - Generic rectangular grid
+        - Channel
+        - Two-dimensional lid-driven cavity
+        - Three-dimensional lid-driven cavity
+        - Square duct
+        - Forcing or equation constructor
+        - Documentation or example
+        - Not case-specific
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add anything else that could help diagnose the problem, such as boundary conditions, resolutions, or parameter values.
