@@ -34,8 +34,10 @@ The package is currently published as a development repository. Compatible NSEBa
 ```julia
 using Pkg
 
-Pkg.develop(url="https://github.com/Davide-Lasagna-s-Lab/NSEBase.jl", rev="dev")
-Pkg.develop(url="https://github.com/Davide-Lasagna-s-Lab/FDGrids.jl", rev="master")
+Pkg.add([
+    PackageSpec(url="https://github.com/Davide-Lasagna-s-Lab/NSEBase.jl", rev="dev"),
+    PackageSpec(url="https://github.com/Davide-Lasagna-s-Lab/FDGrids.jl", rev="master"),
+])
 Pkg.develop(url="https://github.com/Davide-Lasagna-s-Lab/ReSolver-RectangularGrids.jl")
 ```
 

@@ -2,7 +2,6 @@
 Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 FDGrids = "28eb41cd-435a-4ede-8bdb-f2685fc03e8c"
 NSEBase = "9778a910-ce4d-423e-92be-12991f0cf10c"
-ReSolverRectangularGrids = "8ecd8e18-116c-4e5c-b653-b60669b5c0ee"
 
 [compat]
 Documenter = "1"

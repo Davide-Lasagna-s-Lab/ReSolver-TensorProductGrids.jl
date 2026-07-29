@@ -50,7 +50,7 @@ jobs:
         run: |
           julia --project=. -e '
             using Pkg
-            Pkg.develop([
+            Pkg.add([
                 PackageSpec(url="https://github.com/Davide-Lasagna-s-Lab/NSEBase.jl", rev="dev"),
                 PackageSpec(url="https://github.com/Davide-Lasagna-s-Lab/FDGrids.jl", rev="master"),
             ])
