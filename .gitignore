@@ -1,0 +1,7 @@
+/Manifest.toml
+/docs/Manifest.toml
+/docs/build/
+/benchmark/Manifest.toml
+*.cov
+*.mem
+lcov.info

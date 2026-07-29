@@ -1,0 +1,20 @@
+name = "ReSolverRectangularGrids"
+uuid = "8ecd8e18-116c-4e5c-b653-b60669b5c0ee"
+authors = ["Davide Lasagna <davide.lasagna@soton.ac.uk>", "Thomas Burton <tburton5572@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+FDGrids = "28eb41cd-435a-4ede-8bdb-f2685fc03e8c"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NSEBase = "9778a910-ce4d-423e-92be-12991f0cf10c"
+
+[compat]
+FDGrids = "0.4"
+NSEBase = "0.1"
+julia = "1.10"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
