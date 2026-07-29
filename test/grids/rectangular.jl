@@ -72,11 +72,11 @@
         @test_throws ArgumentError NSEBase.derivative_matrix(channel, 1, Val(3), Forward())
         @test_throws ArgumentError NSEBase.derivative_matrix(channel, 2, Val(1), Forward())
 
-        cavity = LidDrivenCavity2DGrid(13, 11; xwidth=3, ywidth=5)
+        cavity = LidDrivenCavity2DGrid(13; width=3)
         @test cavity isa RectangularGrid{2}
         @test weights(cavity) isa RectangularProductWeights{2}
         @test weights(cavity) ≈ cavity.ws[1] * transpose(cavity.ws[2])
-        @test typeof(cavity.D₁[1]) !== typeof(cavity.D₁[2])
+        @test cavity.D₁[1] === cavity.D₁[2]
 
         ws = (collect(1.0:3.0), collect(2.0:4.0), collect(3.0:5.0))
         product3 = RectangularProductWeights(ws)

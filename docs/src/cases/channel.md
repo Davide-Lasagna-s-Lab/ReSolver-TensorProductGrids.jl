@@ -71,7 +71,7 @@ couette = PlaneCouetteFlow(g, 400; Ro=0.1, fftw_flags=FFTW.ESTIMATE, dealias=fal
 
 Reτ = 180
 U = (Reτ / 2) .* plane_poiseuille_base(g)
-poiseuille = PlanePoiseuilleFlow(g, Reτ; f=1, base_flow=(U, nothing, nothing),
+poiseuille = PlanePoiseuilleFlow(g, Reτ; base_flow=(U, nothing, nothing), f=1,
                                  fftw_flags=FFTW.ESTIMATE, dealias=false)
 
 @assert couette.base[1] == plane_couette_base(g)

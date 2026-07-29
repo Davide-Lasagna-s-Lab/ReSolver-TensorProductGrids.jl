@@ -10,13 +10,13 @@
 # resolution `Nz`. The optional temporal resolution and streamwise scale are keywords `Nt` and `α`:
 #
 #     g = SquareDuctGrid(49, 63; Nt=1, α=0.5, width=7)
-#     x, y = g.xs
+#     x, y, z, t = NSEBase.points(g)
 #
 # The pressure-driven equation factory lives separately in `cases/square_duct.jl`. Downstream code
 # can dispatch on `AbstractSquareDuctGrid` when defining related duct cases.
 
 # =============================================================================================== #
-# Layout constants and contracts                                                                 #
+# Layout constants                                                                               #
 # =============================================================================================== #
 
 """
@@ -38,14 +38,27 @@ const SQUARE_DUCT_FFT_ORDER = (3, 4)
 """The two FDGrids dimensions spanning the bounded square cross-section."""
 const SQUARE_DUCT_INHOMOGENEOUS_DIMS = (1, 2)
 
+# =============================================================================================== #
+# Abstract layout contract                                                                       #
+# =============================================================================================== #
+
 """
     AbstractSquareDuctGrid{T}
 
 Layout contract for any real scalar type `T` stored as `(x, y, z, t)` with Fourier directions
 `(z, t)`. Equal side lengths and shared operators are constructor guarantees, not abstract type
 requirements.
+
+The alias describes a layout rather than one concrete representation. NSEBase's device and
+domain-decomposition wrappers preserve the parent's `AbstractGrid` layout parameters, so wrapped
+square-duct grids still satisfy `AbstractSquareDuctGrid`. Downstream algorithms can therefore use
+one dispatch for serial, GPU-backed, and decomposed grids with this layout.
 """
 const AbstractSquareDuctGrid{T} = AbstractGrid{T, 4, SQUARE_DUCT_AXES, SQUARE_DUCT_FFT_ORDER}
+
+# =============================================================================================== #
+# Concrete rectangular-grid alias                                                                #
+# =============================================================================================== #
 
 """
     SquareDuctGrid
@@ -101,7 +114,8 @@ g = SquareDuctGrid(49, 63; Nt=1, α=0.5, width=7)
 ```
 """
 function SquareDuctGrid(N::Int, Nz::Int; Nt::Int=1, α::Real=1,
-                        dist=FDGrids.GaussLobattoGrid(), width=5,
+                        dist::FDGrids.AbstractGridDistribution=FDGrids.GaussLobattoGrid(),
+                        width::Int=5,
                         T::Type{<:Real}=Float64)
     x, D₁, D₂, D₁⁺, D₂⁺, w = _fd_direction(N, (0, 1), dist, width, T)
     return RectangularGrid((x, x), (D₁, D₁), (D₂, D₂), (D₁⁺, D₁⁺), (D₂⁺, D₂⁺),

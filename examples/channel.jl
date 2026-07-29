@@ -24,7 +24,7 @@ let
 
     Reτ = 180
     U = (Reτ / 2) .* plane_poiseuille_base(grid)
-    equations = PlanePoiseuilleFlow(grid, Reτ; f=1, base_flow=(U, nothing, nothing),
+    equations = PlanePoiseuilleFlow(grid, Reτ; base_flow=(U, nothing, nothing), f=1,
                                     fftw_flags=FFTW.ESTIMATE, dealias=false)
 
     (; grid_size=size(grid), derivative_error, norm_error, equations_type=typeof(equations))

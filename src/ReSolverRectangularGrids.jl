@@ -30,6 +30,7 @@ export AbstractSquareDuctGrid, SquareDuctGrid
 export ConstantBodyForce, CoriolisForce
 export plane_couette_base, plane_poiseuille_base
 export PlaneCouetteFlow, PlanePoiseuilleFlow
+export lid_driven_cavity_2d_base, lid_driven_cavity_3d_base
 export LidDrivenCavity2DFlow, LidDrivenCavity3DFlow, SquareDuctFlow
 
 include("helpers.jl")
@@ -39,6 +40,7 @@ include("grids/channel.jl")
 include("grids/lid_driven_cavity_2d.jl")
 include("grids/lid_driven_cavity_3d.jl")
 include("grids/square_duct.jl")
+include("cases/helpers.jl")
 include("cases/channel.jl")
 include("cases/lid_driven_cavity_2d.jl")
 include("cases/lid_driven_cavity_3d.jl")

@@ -21,8 +21,8 @@ The grid describes geometry and differentiation. Boundary conditions remain expl
 | Layout | Constructor | Default physical domain | Storage order | Bounded directions | Fourier directions |
 |:--|:--|:--|:--|:--|:--|
 | Channel | `ChannelGrid(Nx, Ny, Nz)` | `y ∈ [-1,1]`; periodic `x,z` | `(y,x,z,t)` | `y` | `x,z,t` |
-| 2D lid-driven cavity | `LidDrivenCavity2DGrid(Nx, Ny)` | `[0,1]²` | `(x,y,t)` | `x,y` | `t` |
-| 3D lid-driven cavity | `LidDrivenCavity3DGrid(Nx, Ny, Nz)` | `[0,1]³` | `(x,y,z,t)` | `x,y,z` | `t` |
+| 2D square lid-driven cavity | `LidDrivenCavity2DGrid(N)` | `[0,1]²` | `(x,y,t)` | `x,y` | `t` |
+| 3D cubic lid-driven cavity | `LidDrivenCavity3DGrid(N)` | `[0,1]³` | `(x,y,z,t)` | `x,y,z` | `t` |
 | Square duct | `SquareDuctGrid(N, Nz)` | `[0,1]²`; periodic `z` | `(x,y,z,t)` | `x,y` | `z,t` |
 
 All Fourier resolutions are positive and odd. `Nt=1` represents a steady field, while larger odd `Nt` values represent a unit-period time or phase coordinate.
@@ -60,7 +60,7 @@ energy_norm = norm(û)
 
 Reτ = 180
 U = (Reτ / 2) .* plane_poiseuille_base(g)
-equations = PlanePoiseuilleFlow(g, Reτ; f=1, base_flow=(U, nothing, nothing), fftw_flags=FFTW.ESTIMATE)
+equations = PlanePoiseuilleFlow(g, Reτ; base_flow=(U, nothing, nothing), f=1, fftw_flags=FFTW.ESTIMATE)
 ```
 
 The `exp(cos(·))` factors have nonzero coefficients at every Fourier wavenumber, making this a more revealing spectral example than a single trigonometric mode. The complete [getting-started guide](docs/src/quickstart.md) checks the derivative against its analytical value and explains every object above.
@@ -70,7 +70,7 @@ The `exp(cos(·))` factors have nonzero coefficients at every Fourier wavenumber
 Files under `src/grids/` define numerical layouts. Files under `src/cases/` define base profiles and factories for the primitive incompressible equations:
 
 - `PlaneCouetteFlow` and `PlanePoiseuilleFlow` use `ChannelGrid`;
-- `LidDrivenCavity2DFlow` and `LidDrivenCavity3DFlow` require an explicit boundary-data lifting;
+- `LidDrivenCavity2DFlow` and `LidDrivenCavity3DFlow` provide canonical smooth moving-lid liftings and accept explicit replacements through `base_flow`;
 - `SquareDuctFlow` applies a constant pressure-gradient force in physical streamwise `z`.
 
 The constructors return NSEBase `ProjectedNSE` operators, but they do not silently impose wall values. For an inhomogeneous wall condition, put the prescribed steady contribution in `base_flow` and make the perturbation basis satisfy homogeneous boundary conditions. The manual explains [coordinates and numerical conventions](docs/src/conventions.md), including the precise quadrature-weighted discrete adjoint.
@@ -80,8 +80,8 @@ The constructors return NSEBase `ProjectedNSE` operators, but they do not silent
 The four standalone examples have the same structure and are executed by the test suite:
 
 - [channel flow](examples/channel.jl)
-- [2D lid-driven cavity](examples/lid_driven_cavity_2d.jl)
-- [3D lid-driven cavity](examples/lid_driven_cavity_3d.jl)
+- [2D square lid-driven cavity](examples/lid_driven_cavity_2d.jl)
+- [3D cubic lid-driven cavity](examples/lid_driven_cavity_3d.jl)
 - [square-duct flow](examples/square_duct.jl)
 
 Each example uses an analytical field, checks a derivative and norm, and constructs the relevant equations. See the [worked-examples guide](docs/src/examples.md) for the numerical formulas and expected accuracy.
@@ -99,13 +99,13 @@ Useful local entry points are the [quick start](docs/src/quickstart.md), [rectan
 - [FDGrids.jl](https://github.com/Davide-Lasagna-s-Lab/FDGrids.jl) supplies compact finite-difference matrices, quadrature, and weighted adjoints.
 - [Davide-Lasagna-s-Lab/Registry.jl](https://github.com/Davide-Lasagna-s-Lab/Registry.jl) is the organisation's Julia package registry.
 
-## Development and citation
+## Development
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for the development environment, numerical-test expectations, documentation workflow, and pull-request checklist. Run the full local verification with:
+Run the full local verification with:
 
 ```julia
 using Pkg
 Pkg.test()
 ```
 
-If this package contributes to published work, cite the metadata in [CITATION.cff](CITATION.cff). ReSolverRectangularGrids.jl is available under the [MIT License](LICENSE).
+ReSolverRectangularGrids.jl is available under the [MIT License](LICENSE).

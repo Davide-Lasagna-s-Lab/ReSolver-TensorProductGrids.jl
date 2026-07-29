@@ -6,7 +6,7 @@ The repository contains one standalone script for each layout. They deliberately
 2. define a separable analytical field with `exp(cos(·))` in every active homogeneous direction;
 3. compare a Fourier derivative with its exact value;
 4. compare the NSEBase norm with an analytical integral;
-5. construct the matching incompressible equations.
+5. construct the matching incompressible equations, using the canonical case default where one is provided.
 
 Because `exp(cos\theta)` has nonzero coefficients at all integer wavenumbers, these examples exercise the full represented Fourier band. The bounded factors are low-degree polynomials whose derivatives and quadrature integrals are exact to the reported tolerance.
 
@@ -53,3 +53,5 @@ The test scripts evaluate the rapidly convergent series without adding a special
 \]
 
 Tensor-product separability then gives an exact norm for every layout, matching the lazy product quadrature used in the implementation.
+
+The two cavity scripts are intentionally parallel: `LidDrivenCavity2DGrid(N)` and `LidDrivenCavity3DGrid(N)` each use one shared bounded discretisation, while `lid_driven_cavity_2d_base` and `lid_driven_cavity_3d_base` provide the respective canonical moving-lid lifting. The corresponding flow factory uses that helper by default, so an explicit `base_flow` is needed only when prescribing different wall data.

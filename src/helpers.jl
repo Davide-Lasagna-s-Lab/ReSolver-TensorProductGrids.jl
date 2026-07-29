@@ -13,7 +13,7 @@
 Lazy tensor product of `N` one-dimensional quadrature vectors. An entry is evaluated as
 
 ```text
-W[i₁, …, iₙ] = prod(w[n][iₙ] for n in 1:N)
+W[i₁, …, iₙ] = prod(ws[n][iₙ] for n in 1:N)
 ```
 
 so multidimensional quadrature never allocates a materialized product array. The wrapper implements
@@ -86,7 +86,28 @@ function _convert_grid_data(::Type{T}, A::FDGrids.AdjointDiffMatrix) where {T}
     return FDGrids.AdjointDiffMatrix(parent, Vector{T}(A.coeffs))
 end
 
-"""Build one bounded FDGrids direction and its quadrature-weighted adjoint operators."""
+"""
+    _fd_direction(N, lim, dist, width, T)
+
+Build all numerical data for one bounded direction using FDGrids. The `N` collocation points span
+the interval `lim` according to `dist`. First- and second-derivative matrices use the common odd
+stencil width `width`, and their discrete adjoints are formed with the FDGrids quadrature weights.
+Points and weights are materialized as `Vector{T}`; FDGrids constructs derivative matrices with
+element type `T` directly.
+
+# Arguments
+
+- `N`: number of bounded collocation points.
+- `lim`: two-endpoint physical interval.
+- `dist`: FDGrids point distribution on that interval.
+- `width`: finite-difference stencil width for both derivative orders.
+- `T`: real scalar type for points, operators, and weights.
+
+# Returns
+
+A tuple `(x, D₁, D₂, D₁⁺, D₂⁺, w)` containing the collocation points, first- and
+second-derivative matrices, their quadrature-weighted discrete adjoints, and quadrature weights.
+"""
 function _fd_direction(N::Int, lim::NTuple{2, <:Real}, dist::FDGrids.AbstractGridDistribution,
                        width::Int, ::Type{T}) where {T<:Real}
     fdgrid = FDGrids.grid(N, lim[1], lim[2], dist)

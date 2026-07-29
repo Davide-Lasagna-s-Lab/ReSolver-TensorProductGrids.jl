@@ -1,47 +1,50 @@
 @testset verbose=true "Three-dimensional lid-driven-cavity grid                    " begin
-    Nx, Ny, Nz, Nt = 17, 17, 17, 19
-    xlim, ylim, zlim = (0, 1), (0, 1), (0, 1)
-    g = LidDrivenCavity3DGrid(Nx, Ny, Nz; Nt, xlim, ylim, zlim,
-                              dist=FDGrids.GaussLobattoGrid(), width=7)
+    N, Nt = 17, 19
+    lim = (0, 1)
+    g = LidDrivenCavity3DGrid(N; Nt, lim, dist=FDGrids.GaussLobattoGrid(), width=7)
 
-    u(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
-                     bounded_profile(z, zlim) * periodic_profile(2π * t)
-    ux(x, y, z, t) = bounded_profile_d1(x, xlim) * bounded_profile(y, ylim) *
-                      bounded_profile(z, zlim) * periodic_profile(2π * t)
-    uy(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile_d1(y, ylim) *
-                      bounded_profile(z, zlim) * periodic_profile(2π * t)
-    uz(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
-                      bounded_profile_d1(z, zlim) * periodic_profile(2π * t)
-    ut(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
-                      bounded_profile(z, zlim) * 2π * periodic_profile_d1(2π * t)
-    Δu(x, y, z, t) = (bounded_profile_d2(x, xlim) * bounded_profile(y, ylim) *
-        bounded_profile(z, zlim) + bounded_profile(x, xlim) * bounded_profile_d2(y, ylim) *
-        bounded_profile(z, zlim) + bounded_profile(x, xlim) * bounded_profile(y, ylim) *
-        bounded_profile_d2(z, zlim)) * periodic_profile(2π * t)
+    u(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
+                     bounded_profile(z, lim) * periodic_profile(2π * t)
+    ux(x, y, z, t) = bounded_profile_d1(x, lim) * bounded_profile(y, lim) *
+                      bounded_profile(z, lim) * periodic_profile(2π * t)
+    uy(x, y, z, t) = bounded_profile(x, lim) * bounded_profile_d1(y, lim) *
+                      bounded_profile(z, lim) * periodic_profile(2π * t)
+    uz(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
+                      bounded_profile_d1(z, lim) * periodic_profile(2π * t)
+    ut(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
+                      bounded_profile(z, lim) * 2π * periodic_profile_d1(2π * t)
+    Δu(x, y, z, t) = (bounded_profile_d2(x, lim) * bounded_profile(y, lim) *
+        bounded_profile(z, lim) + bounded_profile(x, lim) * bounded_profile_d2(y, lim) *
+        bounded_profile(z, lim) + bounded_profile(x, lim) * bounded_profile(y, lim) *
+        bounded_profile_d2(z, lim)) * periodic_profile(2π * t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
-        independent = LidDrivenCavity3DGrid(13, 11, 15; Nt=5, xlim=(-1, 1), ylim=(0, 2),
-                                             zlim=(-2, 2), xwidth=3, ywidth=5, zwidth=7)
+        steady = LidDrivenCavity3DGrid(N)
+        custom = LidDrivenCavity3DGrid(13; Nt=5, lim=(-1, 1), width=3)
 
         @test g isa LidDrivenCavity3DGrid
+        @test weights(g) isa RectangularProductWeights{3}
         @test g isa AbstractLidDrivenCavity3DGrid
         @test g isa RectangularGrid{3}
-        @test size(g) == (Nx, Ny, Nz, Nt)
+        @test size(g) == (N, N, N, Nt)
         @test LID_DRIVEN_CAVITY_3D_AXES == (1, 2, 3, 4)
         @test fft_storage_dims(g) == LID_DRIVEN_CAVITY_3D_FFT_ORDER
         @test inhomogeneous_storage_dims(g) == LID_DRIVEN_CAVITY_3D_INHOMOGENEOUS_DIMS
         @test fft_physical_dims(g) == (:t,)
         @test inhomogeneous_physical_dims(g) == (:x, :y, :z)
+        @test size(steady) == (N, N, N, 1)
         expected_weights = reshape(g.ws[1], :, 1, 1) .* reshape(g.ws[2], 1, :, 1) .*
                            reshape(g.ws[3], 1, 1, :)
-        @test weights(g) isa RectangularProductWeights{3}
         @test weights(g) ≈ expected_weights
         @test g.scales == (2π,)
-        @test size(growto(g, (11,))) == (Nx, Ny, Nz, 11)
-        @test extrema(independent.xs[1]) == (-1.0, 1.0)
-        @test extrema(independent.xs[2]) == (0.0, 2.0)
-        @test extrema(independent.xs[3]) == (-2.0, 2.0)
-        @test allunique(typeof.(independent.D₁))
+        @test size(growto(g, (11,))) == (N, N, N, 11)
+        @test all(object -> object === first(g.xs), g.xs)
+        @test all(object -> object === first(g.D₁), g.D₁)
+        @test all(object -> object === first(g.D₂), g.D₂)
+        @test all(object -> object === first(g.D₁⁺), g.D₁⁺)
+        @test all(object -> object === first(g.D₂⁺), g.D₂⁺)
+        @test all(object -> object === first(g.ws), g.ws)
+        @test extrema(custom.xs[1]) == (-1.0, 1.0)
         @test_throws MethodError LidDrivenCavity3DGrid(9, 9)
     end
 
@@ -56,22 +59,21 @@
 
     @testset verbose=true "Analytical norms and homogeneous shifts                     " begin
         û = FFT(Field(g, u))
-        exact_norm2 = Float64(bounded_profile_norm2(xlim) * bounded_profile_norm2(ylim) *
-                              bounded_profile_norm2(zlim) * PERIODIC_PROFILE_NORM2)
+        exact_norm2 = Float64(bounded_profile_norm2(lim)^3 * PERIODIC_PROFILE_NORM2)
         velocity = VectorField(Field(g, u), Field(g, (x, y, z, t) -> 2u(x, y, z, t)),
                                Field(g, (x, y, z, t) -> 3u(x, y, z, t)))
         @test norm(û)^2 ≈ exact_norm2 rtol=3e-12
         @test norm(FFT(velocity))^2 ≈ 14exact_norm2 rtol=3e-12
 
         st = 0.23
-        shifted(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
-                               bounded_profile(z, zlim) * periodic_profile(2π * (t + st))
+        shifted(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
+                               bounded_profile(z, lim) * periodic_profile(2π * (t + st))
         @test shift!(copy(û), (st,)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
-        v(x, y, z, t) = dual_bounded_profile(x, xlim) * dual_bounded_profile(y, ylim) *
-                         dual_bounded_profile(z, zlim) * periodic_profile(2π * t + 0.4)
+        v(x, y, z, t) = dual_bounded_profile(x, lim) * dual_bounded_profile(y, lim) *
+                         dual_bounded_profile(z, lim) * periodic_profile(2π * t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 
         for derivative! in (ddx!, ddy!, ddz!, ddt!)

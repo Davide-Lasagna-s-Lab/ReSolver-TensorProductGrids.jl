@@ -24,7 +24,7 @@
         @test fieldnames(typeof(force)) == (:Ro,)
         @test sizeof(force) == sizeof(force.Ro)
 
-        cavity = LidDrivenCavity2DGrid(7, 7; width=3)
+        cavity = LidDrivenCavity2DGrid(7; width=3)
         u2, out2 = VectorField(cavity; N=2), VectorField(cavity; N=2)
         parent(u2[1]) .= 1
         parent(u2[2]) .= 2

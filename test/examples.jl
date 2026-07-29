@@ -6,6 +6,7 @@
         @test result.grid_size == (25, 19, 19, 1)
         @test result.derivative_error < 5e-7
         @test result.norm_error < 5e-11
+        @test result.equations_type <: ProjectedNSE
     end
 
     @testset verbose=true "Two-dimensional cavity example                              " begin
@@ -13,6 +14,7 @@
         @test result.grid_size == (17, 17, 19)
         @test result.derivative_error < 5e-7
         @test result.norm_error < 5e-11
+        @test result.equations_type <: ProjectedNSE
     end
 
     @testset verbose=true "Three-dimensional cavity example                            " begin
@@ -20,6 +22,7 @@
         @test result.grid_size == (15, 15, 15, 19)
         @test result.derivative_error < 5e-7
         @test result.norm_error < 5e-11
+        @test result.equations_type <: ProjectedNSE
     end
 
     @testset verbose=true "Square-duct example                                         " begin
@@ -27,5 +30,6 @@
         @test result.grid_size == (17, 17, 19, 1)
         @test result.derivative_error < 5e-7
         @test result.norm_error < 5e-11
+        @test result.equations_type <: ProjectedNSE
     end
 end

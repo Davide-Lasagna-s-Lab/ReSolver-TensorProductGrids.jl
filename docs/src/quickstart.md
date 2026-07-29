@@ -57,7 +57,7 @@ For channel half-height `h`, reference velocity `U_ref`, and viscosity `ν`, the
 ```@example quickstart
 Reτ = 180
 U = (Reτ / 2) .* plane_poiseuille_base(g)
-equations = PlanePoiseuilleFlow(g, Reτ; f=1, base_flow=(U, nothing, nothing),
+equations = PlanePoiseuilleFlow(g, Reτ; base_flow=(U, nothing, nothing), f=1,
                                 fftw_flags=FFTW.ESTIMATE, dealias=false)
 
 @assert equations isa ProjectedNSE

@@ -20,6 +20,8 @@
         periodic_profile(2π * t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
+        steady = ChannelGrid(Nx, Ny, Nz)
+
         @test g isa ChannelGrid
         @test weights(g) isa RectangularProductWeights{1}
         @test g isa AbstractChannelGrid
@@ -30,8 +32,10 @@
         @test inhomogeneous_storage_dims(g) == CHANNEL_INHOMOGENEOUS_DIMS
         @test fft_physical_dims(g) == (:x, :z, :t)
         @test inhomogeneous_physical_dims(g) == (:y,)
+        @test size(steady) == (Ny, Nx, Nz, 1)
         @test weights(g) ≈ only(g.ws)
         @test g.scales == (α, β, 2π)
+        @test size(growto(g, (11, 13, 15))) == (Ny, 11, 13, 15)
 
         supplied = ChannelGrid(g.xs[1], Nx, Nz, Nt, α, β, g.D₁[1], g.D₂[1],
                                g.D₁⁺[1], g.D₂⁺[1], g.ws[1])
@@ -43,6 +47,7 @@
         @test points(supplied) == points(g)
         @test_throws ArgumentError ChannelGrid(g.xs[1] .+ 1, Nx, Nz, Nt, α, β, g.D₁[1],
                                                g.D₂[1], g.D₁⁺[1], g.D₂⁺[1], g.ws[1])
+        @test_throws MethodError ChannelGrid(9, 9, 9, 9)
     end
 
     @testset verbose=true "Analytical derivatives and Laplacian                        " begin

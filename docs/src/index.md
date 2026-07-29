@@ -13,11 +13,11 @@ The package provides four layouts:
 | Layout | Storage | Bounded coordinates | Fourier coordinates |
 |:--|:--|:--|:--|
 | [Channel](@ref) | `(y,x,z,t)` | `y` | `x,z,t` |
-| [2D lid-driven cavity](@ref "Two-dimensional lid-driven-cavity grid") | `(x,y,t)` | `x,y` | `t` |
-| [3D lid-driven cavity](@ref "Three-dimensional lid-driven-cavity grid") | `(x,y,z,t)` | `x,y,z` | `t` |
+| [2D square lid-driven cavity](@ref "Two-dimensional lid-driven-cavity grid") | `(x,y,t)` | `x,y` | `t` |
+| [3D cubic lid-driven cavity](@ref "Three-dimensional cubic lid-driven-cavity grid") | `(x,y,z,t)` | `x,y,z` | `t` |
 | [Square duct](@ref) | `(x,y,z,t)` | `x,y` | `z,t` |
 
-Each constructor supplies collocation points, compact first- and second-derivative matrices, quadrature-consistent discrete adjoints, lazy product weights, Fourier scales, and resolution growth. The matching case constructors assemble NSEBase primitive-variable equations for plane Couette flow, plane Poiseuille flow, lid-driven cavities, and pressure-driven square ducts.
+Each constructor supplies collocation points, compact first- and second-derivative matrices, quadrature-consistent discrete adjoints, lazy product weights, Fourier scales, and resolution growth. The matching case constructors assemble NSEBase primitive-variable equations for plane Couette flow, plane Poiseuille flow, lid-driven cavities, and pressure-driven square ducts. Both cavity equation constructors default to documented smooth, divergence-free moving-lid liftings that may be replaced through the common `base_flow` keyword.
 
 !!! warning "Boundary conditions stay explicit"
     A grid includes wall points and differential operators but does not impose velocity values. Encode inhomogeneous steady wall data in `base_flow` and require the perturbation basis or residual formulation to satisfy the corresponding homogeneous boundary conditions.

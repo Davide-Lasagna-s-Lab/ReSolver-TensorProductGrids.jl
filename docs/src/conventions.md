@@ -10,7 +10,7 @@ Every grid has up to four physical coordinate slots `(x,y,z,t)`. `AXES` maps tho
 |:--|:--|:--|
 | Channel | `(2,1,3,4)` | `(y,x,z,t)` |
 | 2D cavity | `(1,2,nothing,3)` | `(x,y,t)` |
-| 3D cavity | `(1,2,3,4)` | `(x,y,z,t)` |
+| 3D cubic cavity | `(1,2,3,4)` | `(x,y,z,t)` |
 | Square duct | `(1,2,3,4)` | `(x,y,z,t)` |
 
 Physical derivative wrappers use `AXES`, so `ddx!` always means physical `x`. The unusual channel storage order is therefore an optimization detail rather than a semantic change.
@@ -52,7 +52,7 @@ Each bounded direction owns a one-dimensional FDGrids weight vector. `Rectangula
 W_{i_1,\ldots,i_N}=\prod_{d=1}^{N}w^{(d)}_{i_d}.
 \]
 
-Its `AbstractArray` interface lets NSEBase use ordinary Cartesian indexing while avoiding a dense multidimensional allocation. For a square duct the constructor intentionally shares the same points, matrices, adjoints, and weights between `x` and `y`.
+Its `AbstractArray` interface lets NSEBase use ordinary Cartesian indexing while avoiding a dense multidimensional allocation. The square and cubic cavity constructors share one bounded discretisation between every spatial direction; the square-duct constructor does the same between cross-stream `x` and `y`. This literal sharing preserves coordinate symmetry and avoids rebuilding identical operators.
 
 ## Discrete and continuous adjoints
 
@@ -97,4 +97,4 @@ Quadratic nonlinear products can fold unresolved Fourier modes into the represen
 
 Case constructors pass a tuple `base_flow` to NSEBase. Each non-`nothing` entry contains one Cartesian velocity component over the bounded coordinates and is added only to the zero Fourier mode. This separates prescribed steady wall data or a laminar reference profile from homogeneous perturbations.
 
-For the cavity examples, the supplied polynomial liftings are written for the default `[0,1]` intervals. Rescale the coordinates and derivatives before using them on custom `xlim`, `ylim`, or `zlim` domains.
+The cavity factories default to [`lid_driven_cavity_2d_base`](@ref) and [`lid_driven_cavity_3d_base`](@ref). Both helpers normalize the common cavity interval `lim` to `[0,1]`, produce smooth divergence-free liftings, and taper the moving-lid velocity to zero at its corners or edges. Supplying `base_flow` explicitly replaces that canonical boundary-data lifting without changing any other constructor keyword.

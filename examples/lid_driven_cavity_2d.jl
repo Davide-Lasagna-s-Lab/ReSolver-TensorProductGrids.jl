@@ -6,7 +6,7 @@ using NSEBase
 using ReSolverRectangularGrids
 
 let
-    grid = LidDrivenCavity2DGrid(17, 17; Nt=19, dist=FDGrids.GaussLobattoGrid(), width=5)
+    grid = LidDrivenCavity2DGrid(17; Nt=19, dist=FDGrids.GaussLobattoGrid(), width=5)
     x, y, t = points(grid)
 
     periodic_norm2 = sum(inv(float(factorial(k)))^2 for k in 0:20)
@@ -22,11 +22,9 @@ let
     @assert derivative_error < 5e-7
     @assert norm_error < 5e-11
 
-    X, Y, _ = points(grid)
-    U = @. 16X^2 * (1 - X)^2 * (3Y^2 - 2Y)
-    V = @. -32X * (1 - X) * (1 - 2X) * Y^2 * (Y - 1)
-    equations = LidDrivenCavity2DFlow(grid, 1000; base_flow=(U, V),
-                                      fftw_flags=FFTW.ESTIMATE, dealias=false)
+    base_flow = lid_driven_cavity_2d_base(grid)
+    equations = LidDrivenCavity2DFlow(grid, 1000; fftw_flags=FFTW.ESTIMATE, dealias=false)
+    @assert equations.base == base_flow
 
     (; grid_size=size(grid), derivative_error, norm_error, equations_type=typeof(equations))
 end

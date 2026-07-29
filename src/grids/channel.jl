@@ -9,7 +9,7 @@
 #
 # Typical use; the positional resolutions follow physical order `(Nx, Ny, Nz)`, while the optional
 # temporal resolution is the keyword `Nt`:
-# 
+#
 #     g = ChannelGrid(63, 65, 63; Nt=1, α=0.5, β=1, width=7)
 #     y, x, z, t = NSEBase.points(g)  # coordinates are returned in storage order
 #
@@ -17,7 +17,7 @@
 # `CHANNEL_FFT_ORDER`, or dispatch downstream algorithms on `AbstractChannelGrid`.
 
 # =============================================================================================== #
-# Layout constants and contracts                                                                 #
+# Layout constants                                                                               #
 # =============================================================================================== #
 
 """
@@ -43,11 +43,15 @@ The channel's single FDGrids dimension, corresponding to physical wall-normal `y
 """
 const CHANNEL_INHOMOGENEOUS_DIMS = (1,)
 
+# =============================================================================================== #
+# Abstract layout contract                                                                       #
+# =============================================================================================== #
+
 """
     AbstractChannelGrid{T}
 
 Layout contract for any real scalar type `T` stored as `(y, x, z, t)` with Fourier directions
-`(x, z, t)`. Wall-normal points span `[-1, 1]`.
+`(x, z, t)`.
 
 The alias describes a layout rather than one concrete representation. NSEBase's device and
 domain-decomposition wrappers preserve the parent's `AbstractGrid` layout parameters, so wrapped
@@ -55,6 +59,10 @@ channel grids still satisfy `AbstractChannelGrid`. Downstream algorithms can the
 dispatch for serial, GPU-backed, and decomposed channel grids.
 """
 const AbstractChannelGrid{T} = AbstractGrid{T, 4, CHANNEL_AXES, CHANNEL_FFT_ORDER}
+
+# =============================================================================================== #
+# Concrete rectangular-grid alias                                                                #
+# =============================================================================================== #
 
 """
     ChannelGrid

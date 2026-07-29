@@ -1,41 +1,46 @@
 @testset verbose=true "Two-dimensional lid-driven-cavity grid                      " begin
-    Nx, Ny, Nt = 17, 17, 19
-    xlim, ylim = (0, 1), (0, 1)
-    g = LidDrivenCavity2DGrid(Nx, Ny; Nt, xlim, ylim,
-                              dist=FDGrids.GaussLobattoGrid(), width=7)
+    N, Nt = 17, 19
+    lim = (0, 1)
+    g = LidDrivenCavity2DGrid(N; Nt, lim, dist=FDGrids.GaussLobattoGrid(), width=7)
 
-    u(x, y, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+    u(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                   periodic_profile(2π * t)
-    ux(x, y, t) = bounded_profile_d1(x, xlim) * bounded_profile(y, ylim) *
+    ux(x, y, t) = bounded_profile_d1(x, lim) * bounded_profile(y, lim) *
                    periodic_profile(2π * t)
-    uy(x, y, t) = bounded_profile(x, xlim) * bounded_profile_d1(y, ylim) *
+    uy(x, y, t) = bounded_profile(x, lim) * bounded_profile_d1(y, lim) *
                    periodic_profile(2π * t)
-    ut(x, y, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+    ut(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                    2π * periodic_profile_d1(2π * t)
-    Δu(x, y, t) = (bounded_profile_d2(x, xlim) * bounded_profile(y, ylim) +
-                    bounded_profile(x, xlim) * bounded_profile_d2(y, ylim)) *
+    Δu(x, y, t) = (bounded_profile_d2(x, lim) * bounded_profile(y, lim) +
+                    bounded_profile(x, lim) * bounded_profile_d2(y, lim)) *
                    periodic_profile(2π * t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
-        independent = LidDrivenCavity2DGrid(13, 11; Nt=5, xlim=(-1, 1), ylim=(0, 2),
-                                             xwidth=3, ywidth=5)
+        steady = LidDrivenCavity2DGrid(N)
+        custom = LidDrivenCavity2DGrid(13; Nt=5, lim=(-1, 1), width=3)
 
         @test g isa LidDrivenCavity2DGrid
+        @test weights(g) isa RectangularProductWeights{2}
         @test g isa AbstractLidDrivenCavity2DGrid
         @test g isa RectangularGrid{2}
-        @test size(g) == (Nx, Ny, Nt)
+        @test size(g) == (N, N, Nt)
         @test LID_DRIVEN_CAVITY_2D_AXES == (1, 2, nothing, 3)
         @test fft_storage_dims(g) == LID_DRIVEN_CAVITY_2D_FFT_ORDER
         @test inhomogeneous_storage_dims(g) == LID_DRIVEN_CAVITY_2D_INHOMOGENEOUS_DIMS
         @test fft_physical_dims(g) == (:t,)
         @test inhomogeneous_physical_dims(g) == (:x, :y)
+        @test size(steady) == (N, N, 1)
         @test weights(g) ≈ g.ws[1] * transpose(g.ws[2])
         @test g.scales == (2π,)
-        @test size(growto(g, (11,))) == (Nx, Ny, 11)
-        @test extrema(independent.xs[1]) == (-1.0, 1.0)
-        @test extrema(independent.xs[2]) == (0.0, 2.0)
-        @test typeof(independent.D₁[1]) !== typeof(independent.D₁[2])
-        @test_throws MethodError LidDrivenCavity2DGrid(9, 9, 9)
+        @test size(growto(g, (11,))) == (N, N, 11)
+        @test all(object -> object === first(g.xs), g.xs)
+        @test all(object -> object === first(g.D₁), g.D₁)
+        @test all(object -> object === first(g.D₂), g.D₂)
+        @test all(object -> object === first(g.D₁⁺), g.D₁⁺)
+        @test all(object -> object === first(g.D₂⁺), g.D₂⁺)
+        @test all(object -> object === first(g.ws), g.ws)
+        @test extrema(custom.xs[1]) == (-1.0, 1.0)
+        @test_throws MethodError LidDrivenCavity2DGrid(9, 9)
     end
 
     @testset verbose=true "Analytical derivatives and Laplacian                        " begin
@@ -49,21 +54,20 @@
 
     @testset verbose=true "Analytical norms and homogeneous shifts                     " begin
         û = FFT(Field(g, u))
-        exact_norm2 = Float64(bounded_profile_norm2(xlim) * bounded_profile_norm2(ylim) *
-                              PERIODIC_PROFILE_NORM2)
+        exact_norm2 = Float64(bounded_profile_norm2(lim)^2 * PERIODIC_PROFILE_NORM2)
         velocity = VectorField(Field(g, u), Field(g, (x, y, t) -> 2u(x, y, t)),
                                Field(g, (x, y, t) -> 3u(x, y, t)))
         @test norm(û)^2 ≈ exact_norm2 rtol=3e-12
         @test norm(FFT(velocity))^2 ≈ 14exact_norm2 rtol=3e-12
 
         st = 0.23
-        shifted(x, y, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+        shifted(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                             periodic_profile(2π * (t + st))
         @test shift!(copy(û), (st,)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
-        v(x, y, t) = dual_bounded_profile(x, xlim) * dual_bounded_profile(y, ylim) *
+        v(x, y, t) = dual_bounded_profile(x, lim) * dual_bounded_profile(y, lim) *
                       periodic_profile(2π * t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 

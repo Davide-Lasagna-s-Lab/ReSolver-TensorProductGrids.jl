@@ -1,28 +1,29 @@
 @testset verbose=true "Square-duct grid                                            " begin
     N, Nz, Nt, α = 17, 19, 19, 1.25
-    xlim, ylim = (0, 1), (0, 1)
+    lim = (0, 1)
     g = SquareDuctGrid(N, Nz; Nt, α, dist=FDGrids.GaussLobattoGrid(), width=7)
 
-    u(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+    u(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                      periodic_profile(α * z) * periodic_profile(2π * t)
-    ux(x, y, z, t) = bounded_profile_d1(x, xlim) * bounded_profile(y, ylim) *
+    ux(x, y, z, t) = bounded_profile_d1(x, lim) * bounded_profile(y, lim) *
                       periodic_profile(α * z) * periodic_profile(2π * t)
-    uy(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile_d1(y, ylim) *
+    uy(x, y, z, t) = bounded_profile(x, lim) * bounded_profile_d1(y, lim) *
                       periodic_profile(α * z) * periodic_profile(2π * t)
-    uz(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+    uz(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                       α * periodic_profile_d1(α * z) * periodic_profile(2π * t)
-    ut(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+    ut(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                       periodic_profile(α * z) * 2π * periodic_profile_d1(2π * t)
-    Δu(x, y, z, t) = ((bounded_profile_d2(x, xlim) * bounded_profile(y, ylim) +
-                        bounded_profile(x, xlim) * bounded_profile_d2(y, ylim)) *
-                       periodic_profile(α * z) + bounded_profile(x, xlim) *
-                       bounded_profile(y, ylim) * α^2 * periodic_profile_d2(α * z)) *
+    Δu(x, y, z, t) = ((bounded_profile_d2(x, lim) * bounded_profile(y, lim) +
+                        bounded_profile(x, lim) * bounded_profile_d2(y, lim)) *
+                       periodic_profile(α * z) + bounded_profile(x, lim) *
+                       bounded_profile(y, lim) * α^2 * periodic_profile_d2(α * z)) *
                       periodic_profile(2π * t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
-        steady = SquareDuctGrid(N, Nz; α, dist=FDGrids.GaussLobattoGrid(), width=7)
+        steady = SquareDuctGrid(N, Nz)
 
         @test g isa SquareDuctGrid
+        @test weights(g) isa RectangularProductWeights{2}
         @test g isa AbstractSquareDuctGrid
         @test g isa RectangularGrid{2}
         @test size(g) == (N, N, Nz, Nt)
@@ -34,12 +35,14 @@
         @test size(steady) == (N, N, Nz, 1)
         @test weights(g) ≈ g.ws[1] * transpose(g.ws[2])
         @test g.scales == (α, 2π)
+        @test size(growto(g, (11, 13))) == (N, N, 11, 13)
         @test g.xs[1] === g.xs[2]
         @test g.D₁[1] === g.D₁[2]
         @test g.D₂[1] === g.D₂[2]
         @test g.D₁⁺[1] === g.D₁⁺[2]
         @test g.D₂⁺[1] === g.D₂⁺[2]
         @test g.ws[1] === g.ws[2]
+        @test_throws MethodError SquareDuctGrid(9, 9, 9)
     end
 
     @testset verbose=true "Analytical derivatives and Laplacian                        " begin
@@ -55,21 +58,20 @@
 
     @testset verbose=true "Analytical norms and homogeneous shifts                     " begin
         û = FFT(Field(g, u))
-        exact_norm2 = Float64(bounded_profile_norm2(xlim) * bounded_profile_norm2(ylim) *
-                              PERIODIC_PROFILE_NORM2^2)
+        exact_norm2 = Float64(bounded_profile_norm2(lim)^2 * PERIODIC_PROFILE_NORM2^2)
         velocity = VectorField(Field(g, u), Field(g, (x, y, z, t) -> 2u(x, y, z, t)),
                                Field(g, (x, y, z, t) -> 3u(x, y, z, t)))
         @test norm(û)^2 ≈ exact_norm2 rtol=3e-12
         @test norm(FFT(velocity))^2 ≈ 14exact_norm2 rtol=3e-12
 
         sz, st = 1.11, 0.23
-        shifted(x, y, z, t) = bounded_profile(x, xlim) * bounded_profile(y, ylim) *
+        shifted(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
                                periodic_profile(α * (z + sz)) * periodic_profile(2π * (t + st))
         @test shift!(copy(û), (sz, st)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
-        v(x, y, z, t) = dual_bounded_profile(x, xlim) * dual_bounded_profile(y, ylim) *
+        v(x, y, z, t) = dual_bounded_profile(x, lim) * dual_bounded_profile(y, lim) *
                          periodic_profile(α * z + 0.3) * periodic_profile(2π * t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 
