@@ -43,8 +43,9 @@ derivative_error < 5e-7
 
 Construct the grid with `SquareDuctGrid(N, Nz; ...)`, where one bounded resolution `N` is used for
 both sides of the cross-section. `Nt=1` selects a steady field, `α=1` gives streamwise length
-`2π`, `dist=FDGrids.GaussLobattoGrid()` selects the shared bounded distribution, `width=5` selects
-the shared first- and second-derivative stencil width, and `T=Float64` selects the scalar type.
+``2\pi``, `dist=FDGrids.GaussLobattoGrid()` selects the shared bounded distribution, `width=5`
+selects the shared first- and second-derivative stencil width, and `T=Float64` selects the scalar
+type.
 
 The Fourier resolutions `Nz` and `Nt` must be positive and odd. The bounded resolution must be
 large enough for the FDGrids stencil and construction of its quadrature-weighted discrete

@@ -84,10 +84,10 @@ const ChannelGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
 
 Construct a channel grid stored as `(y, x, z, t)`.
 
-`Ny` wall-normal points span the fixed half-height interval `[-1, 1]` and use the selected FDGrids
+`Ny` wall-normal points span the fixed half-height interval ``[-1,1]`` and use the selected FDGrids
 distribution. `Nx`, `Nz`, and `Nt` are positive odd Fourier resolutions. The streamwise and
-spanwise wavenumber scales are `α = 2π/Lx` and `β = 2π/Lz`; the unit-period time or phase scale is
-`2π`. `Nt=1` represents a steady or time-independent field.
+spanwise wavenumber scales are ``α=2π/L_x`` and ``β=2π/L_z``; the unit-period time or phase scale
+is ``2π``. `Nt=1` represents a steady or time-independent field.
 
 `width` is the odd FDGrids stencil width used by both first and second derivatives. Weighted
 adjoints are constructed from the FDGrids quadrature weights. The default Gauss–Lobatto grid
@@ -102,9 +102,9 @@ includes both walls, but no velocity boundary condition is imposed by the grid i
 # Keyword arguments
 
 - `Nt`: positive odd temporal Fourier resolution; one represents a steady field.
-- `α`: streamwise wavenumber scale `2π/Lx`.
-- `β`: spanwise wavenumber scale `2π/Lz`.
-- `dist`: FDGrids distribution on the fixed wall-normal interval `[-1,1]`.
+- `α`: streamwise wavenumber scale ``2π/L_x``.
+- `β`: spanwise wavenumber scale ``2π/L_z``.
+- `dist`: FDGrids distribution on the fixed wall-normal interval ``[-1,1]``.
 - `width`: finite-difference stencil width for first and second wall-normal derivatives; weighted
   adjoints require `Ny > 2*width`.
 - `T`: real scalar type used for points, operators, weights, and Fourier scales.
@@ -135,7 +135,7 @@ end
     ChannelGrid(y, Nx, Nz, Nt, α, β, Dy, Dy2, Dya, Dy2a, wy, T=Float64)
 
 Construct a channel from precomputed wall-normal points, differentiation matrices, and quadrature
-weights. The points must span the fixed wall interval `[-1, 1]`. `Dya` and `Dy2a` are the
+weights. The points must span the fixed wall interval ``[-1,1]``. `Dya` and `Dy2a` are the
 quadrature-weighted discrete adjoints of `Dy` and `Dy2`; they are explicit inputs because a
 precomputed discretisation owns the precise adjoint operators used by its tested formulation.
 
@@ -144,7 +144,7 @@ discretisation. All data are converted to `T` only when needed.
 
 # Arguments
 
-- `y`: wall-normal collocation vector spanning `[-1,1]`.
+- `y`: wall-normal collocation vector spanning ``[-1,1]``.
 - `Nx`, `Nz`, `Nt`: positive odd streamwise, spanwise, and temporal Fourier resolutions.
 - `α`, `β`: streamwise and spanwise wavenumber scales.
 - `Dy`, `Dy2`: first- and second-derivative matrices in `y`.

@@ -18,8 +18,8 @@
 """
     plane_couette_base(g::AbstractChannelGrid) -> Vector
 
-Return the canonical streamwise Couette base profile `U(y)=y` on the channel's fixed wall-normal
-interval `[-1,1]`.
+Return the canonical streamwise Couette base profile ``U(y)=y`` on the channel's fixed wall-normal
+interval ``[-1,1]``.
 
 # Arguments
 
@@ -41,8 +41,8 @@ plane_couette_base(g::AbstractChannelGrid) = copy(vec(points(g)[1]))
 """
     plane_poiseuille_base(g::AbstractChannelGrid) -> Vector
 
-Return the canonical streamwise Poiseuille base profile `U(y)=1-y²` on the fixed wall-normal
-interval `[-1,1]`.
+Return the canonical streamwise Poiseuille base profile ``U(y)=1-y^2`` on the fixed wall-normal
+interval ``[-1,1]``.
 
 # Arguments
 
@@ -79,16 +79,16 @@ Construct the incompressible plane Couette equations
 \qquad \nabla\cdot\boldsymbol{u}=0,
 ```
 
-where `\boldsymbol{u}=(u,v,w)`. With channel half-height `h`, reference velocity `U_{ref}`, and
-kinematic viscosity `ν`,
+where ``\boldsymbol{u}=(u,v,w)``. With channel half-height ``h``, reference velocity ``U_{ref}``,
+and kinematic viscosity ``\nu``,
 
 ```math
 Re=\frac{U_{ref}h}{\nu}.
 ```
 
-For the default symmetric flow, `U_{ref}` is the magnitude of either wall velocity and the
-nondimensional walls move at `u=±1`. Spanwise rotation `\boldsymbol{\Omega}=\Omega\boldsymbol{e}_z`
-uses
+For the default symmetric flow, ``U_{ref}`` is the magnitude of either wall velocity and the
+nondimensional walls move at ``u=\pm1``. Spanwise rotation
+``\boldsymbol{\Omega}=\Omega\boldsymbol{e}_z`` uses
 
 ```math
 Ro=\frac{2\Omega h}{U_{ref}},\qquad
@@ -96,14 +96,14 @@ Ro=\frac{2\Omega h}{U_{ref}},\qquad
 ```
 
 `base_flow=(U,V,W)` is added only to the steady zero `(x,z,t)` Fourier mode. With the default
-lifting, perturbations that vanish at `y=±1` recover total wall velocities `(-1,0,0)` and
-`(1,0,0)`. The grid and equation constructor do not impose those perturbation boundary values.
+lifting, perturbations that vanish at ``y=\pm1`` recover total wall velocities ``(-1,0,0)`` and
+``(1,0,0)``. The grid and equation constructor do not impose those perturbation boundary values.
 Every nonzero base-flow component must have the bounded shape `(Ny,)`.
 
 # Arguments
 
-- `g`: channel grid stored as `(y,x,z,t)`, with `y∈[-1,1]`.
-- `Re`: real Reynolds number `U_{ref}h/ν`, multiplying viscosity as `1/Re`.
+- `g`: channel grid stored as `(y,x,z,t)`, with ``y\in[-1,1]``.
+- `Re`: real Reynolds number ``U_{ref}h/\nu``, multiplying viscosity as ``1/Re``.
 
 # Keyword arguments
 
@@ -151,7 +151,7 @@ Construct the pressure-driven plane Poiseuille equations
 ```
 
 using the Reynolds-number convention of [`PlaneCouetteFlow`](@ref). For dimensional mean pressure
-`\bar p^*`, density `ρ`, and positive `x` downstream, the signed uniform acceleration is
+``\bar p^*``, density ``\rho``, and positive ``x`` downstream, the signed uniform acceleration is
 
 ```math
 f=-\frac{h}{\rho U_{ref}^2}\frac{d\bar p^*}{dx^*}.
@@ -171,38 +171,38 @@ U = (Reτ / 2) .* plane_poiseuille_base(g)
 equations = PlanePoiseuilleFlow(g, Reτ; base_flow=(U, nothing, nothing), f=1)
 ```
 
-Then the constructor argument is `Reτ`, and `U=(Reτ/2)(1-y²)` is the laminar equilibrium. More
-generally,
+Then the constructor argument is `Reτ`, and the laminar equilibrium is
+``U=(Re_\tau/2)(1-y^2)``. More generally,
 
 ```math
 Re_\tau=Re\sqrt{|f|},
 ```
 
-or, for positive forcing, choose `f=(Reτ/Re)^2`. The unscaled default profile has bulk velocity
-`2/3`; use `3/2*(1-y²)` when the chosen bulk scale is one.
+or, for positive forcing, choose ``f=(Re_\tau/Re)^2``. The unscaled default profile has bulk
+velocity ``2/3``; use ``3(1-y^2)/2`` when the chosen bulk scale is one.
 
 This constructor represents pressure-driven flow and therefore requires `f` to be nonzero. A
 prescribed-bulk-velocity formulation instead uses `NSEBase.construct_equations` with `NoForce()`
 and constrains the streamwise component of every basis mode in the zero spatial
-`(k_x,k_z)=(0,0)` sector to have zero quadrature-weighted mean:
+``(k_x,k_z)=(0,0)`` sector to have zero quadrature-weighted mean:
 
 ```math
 \sum_j w_j\,\widehat{\phi}_x(0,y_j,0,k_t)=0.
 ```
 
-Apply the constraint to every temporal mode `k_t` when the bulk velocity is fixed at every time.
-The uniform pressure gradient is then an unrepresented Lagrange multiplier, and `Reτ` is recovered
-from that gradient or the mean wall shear.
+Apply the constraint to every temporal mode ``k_t`` when the bulk velocity is fixed at every time.
+The uniform pressure gradient is then an unrepresented Lagrange multiplier, and ``Re_\tau`` is
+recovered from that gradient or the mean wall shear.
 
 # Arguments
 
-- `g`: channel grid stored as `(y,x,z,t)`, with `y∈[-1,1]`.
-- `Re`: real Reynolds number `U_{ref}h/ν`, multiplying viscosity as `1/Re`.
+- `g`: channel grid stored as `(y,x,z,t)`, with ``y\in[-1,1]``.
+- `Re`: real Reynolds number ``U_{ref}h/\nu``, multiplying viscosity as ``1/Re``.
 
 # Keyword arguments
 
 - `base_flow`: three-component wall-normal tuple added to the steady zero Fourier mode.
-- `f`: nonzero signed uniform streamwise forcing; positive values drive flow in `+x`. Zero throws
+- `f`: nonzero signed uniform streamwise forcing; positive values drive flow in ``+x``. Zero throws
   an `ArgumentError`.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.

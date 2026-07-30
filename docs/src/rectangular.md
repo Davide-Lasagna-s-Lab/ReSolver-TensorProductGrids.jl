@@ -24,23 +24,28 @@ This is why `points(g)` returns `(y,x,z,t)` for a channel even though named wrap
 
 The tuples `xs`, `D₁`, `D₂`, `D₁⁺`, `D₂⁺`, and `ws` follow increasing inhomogeneous storage dimension. `D₁` and `D₂` are FDGrids first- and second-derivative matrices. Their plus variants are the quadrature-weighted discrete adjoints. Different bounded directions may use different intervals, point distributions, and stencil widths.
 
-`weights(g)` returns a cached `RectangularProductWeights` object. For one-dimensional weights `w₁,\ldots,w_N`,
+`weights(g)` returns a cached `RectangularProductWeights` object. For one-dimensional weights
+``w_1,\ldots,w_N``,
 
-\[
+```math
 W[i_1,\ldots,i_N] = \prod_{j=1}^{N} w_j[i_j].
-\]
+```
 
 The product is evaluated when indexed; no dense tensor-product array is allocated.
 
 ## Fourier directions
 
-`scales` follows `FFT_DIMS` order. An integer mode `n` in a direction with scale `κ` has physical wavenumber `nκ` and period `2π/κ`. Every scale is positive and finite, and every Fourier resolution is positive and odd. The first Fourier dimension is real-to-complex; subsequent dimensions retain signed complex modes.
+`scales` follows `FFT_DIMS` order. An integer mode ``n`` in a direction with scale ``\kappa`` has
+physical wavenumber ``n\kappa`` and period ``2\pi/\kappa``. Every scale is positive and finite, and
+every Fourier resolution is positive and odd. The first Fourier dimension is real-to-complex;
+subsequent dimensions retain signed complex modes.
 
 `points(g; dealias=true)` returns coordinates at NSEBase's odd 3/2-rule padded Fourier sizes. `growto(g, sizes)` changes only the Fourier resolutions and preserves the bounded points, matrices, adjoints, weights, and scales.
 
 ## Derivative dispatch
 
-NSEBase maps `ddx!`, `ddy!`, `ddz!`, and `ddt!` through `AXES`. A Fourier derivative multiplies mode `n` by `inκ`. A bounded derivative retrieves the correct FDGrids matrix through:
+NSEBase maps `ddx!`, `ddy!`, `ddz!`, and `ddt!` through `AXES`. A Fourier derivative multiplies
+mode ``n`` by ``\mathrm{i}n\kappa``. A bounded derivative retrieves the correct FDGrids matrix through:
 
 ```julia
 NSEBase.derivative_matrix(g, storage_dim, Val(order), mode)

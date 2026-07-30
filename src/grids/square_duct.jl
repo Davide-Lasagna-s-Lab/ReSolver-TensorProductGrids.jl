@@ -78,8 +78,8 @@ const SquareDuctGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
     SquareDuctGrid(N, Nz; Nt=1, α=1,
                    dist=FDGrids.GaussLobattoGrid(), width=5, T=Float64)
 
-Construct a square-duct grid with bounded cross-section `[0, 1] × [0, 1]`, periodic streamwise
-length `Lz = 2π/α`, and unit-period time or phase. The stored size is `(N, N, Nz, Nt)` and the
+Construct a square-duct grid with bounded cross-section ``[0,1]×[0,1]``, periodic streamwise
+length ``L_z=2π/α``, and unit-period time or phase. The stored size is `(N, N, Nz, Nt)` and the
 Fourier scales are `(α, 2π)`.
 
 One FDGrids discretisation is reused in both cross-section directions, so corresponding entries in
@@ -97,7 +97,7 @@ flow conditions itself.
 # Keyword arguments
 
 - `Nt`: positive odd temporal Fourier resolution; one represents a steady field.
-- `α`: streamwise wavenumber scale `2π/Lz`.
+- `α`: streamwise wavenumber scale ``2π/L_z``.
 - `dist`: FDGrids distribution shared by both bounded directions.
 - `width`: finite-difference stencil width shared by both bounded directions; weighted adjoints
   require `N > 2*width`.

@@ -71,7 +71,7 @@ const AbstractLidDrivenCavity2DGrid{T} =
     LidDrivenCavity2DGrid
 
 Concrete [`RectangularGrid{2}`](@ref) alias for the 2D cavity layout. Its stored size is
-`(N, N, Nt)` and its only Fourier scale is the unit-period time or phase scale `2π`. The
+`(N, N, Nt)` and its only Fourier scale is the unit-period time or phase scale ``2π``. The
 constructor shares its points, derivative matrices, adjoints, and weights between `x` and `y`.
 """
 const LidDrivenCavity2DGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{

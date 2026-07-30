@@ -26,19 +26,20 @@ derivative_error
 
 The positional resolutions are in physical order `(Nx,Ny,Nz)`, but channel arrays are stored as `(y,x,z,t)` so the bounded coordinate is contiguous. Named derivative functions stay physical: `ddz!` differentiates physical `z` regardless of its storage dimension.
 
-The streamwise and spanwise periods are `2π/α` and `2π/β`. `Nt=1` means that the field is steady. The default Gauss–Lobatto wall-normal grid includes both walls at `y=±1`.
+The streamwise and spanwise periods are ``2\pi/\alpha`` and ``2\pi/\beta``. `Nt=1` means that the
+field is steady. The default Gauss–Lobatto wall-normal grid includes both walls at ``y=\pm1``.
 
 ## Analytical norm
 
 NSEBase's spectral norm integrates the bounded coordinate using FDGrids quadrature and averages every periodic coordinate. For the field above,
 
-\[
+```math
 \|u\|^2 =
 \int_{-1}^{1}(1-y^2)^2\,dy
 \,
 \left(\frac{1}{2\pi}\int_0^{2\pi}e^{2\cos\theta}\,d\theta\right)^2
 = \frac{16}{15}I_0(2)^2.
-\]
+```
 
 ```@example quickstart
 I₀₂ = sum(inv(float(factorial(k)))^2 for k in 0:20)
@@ -48,11 +49,14 @@ norm_error = abs(norm(û)^2 - (16 / 15) * I₀₂^2)
 norm_error
 ```
 
-The `exp(cos(·))` factors have nonzero coefficients at all Fourier wavenumbers, so the derivative checks spectral behavior across the full resolved band.
+The ``\exp(\cos(\cdot))`` factors have nonzero coefficients at all Fourier wavenumbers, so the
+derivative checks spectral behavior across the full resolved band.
 
 ## Equations
 
-For channel half-height `h`, reference velocity `U_ref`, and viscosity `ν`, the constructor uses `Re=U_ref h/ν`. With friction-velocity scaling, `Re=Reτ` and unit dimensionless forcing, the laminar equilibrium is `U=(Reτ/2)(1-y²)`:
+For channel half-height ``h``, reference velocity ``U_{ref}``, and viscosity ``\nu``, the
+constructor uses ``Re=U_{ref}h/\nu``. With friction-velocity scaling, ``Re=Re_\tau`` and unit
+dimensionless forcing, the laminar equilibrium is ``U=(Re_\tau/2)(1-y^2)``:
 
 ```@example quickstart
 Reτ = 180

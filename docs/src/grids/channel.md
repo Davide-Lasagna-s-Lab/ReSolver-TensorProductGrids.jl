@@ -15,7 +15,7 @@ stored with wall-normal `y` first so that each finite-difference operation acts 
 
 Thus `size(g) == (Ny, Nx, Nz, Nt)` and `points(g)` returns `(y, x, z, t)` in storage order.
 Streamwise `x` is the real-to-complex transform direction; `z` and `t` use complex transforms.
-The half-channel height is the length scale because the walls are fixed at `y = -1` and `y = 1`.
+The half-channel height is the length scale because the walls are fixed at ``y=-1`` and ``y=1``.
 
 ## Differentiation in a Fourier direction
 

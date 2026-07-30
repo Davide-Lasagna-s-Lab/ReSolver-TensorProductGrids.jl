@@ -28,9 +28,9 @@ Construct the pressure-driven incompressible square-duct equations
 \qquad \nabla\cdot\boldsymbol{u}=0,
 ```
 
-where `\boldsymbol{u}=(u,v,w)` and physical `z` is streamwise. Writing the positive dimensional
-pressure-gradient acceleration as `G=-(1/ρ)d\bar p^*/dz^*`, and using the full square side `L` and
-velocity `U_{ref}` as reference scales,
+where ``\boldsymbol{u}=(u,v,w)`` and physical ``z`` is streamwise. Writing the positive dimensional
+pressure-gradient acceleration as ``G=-(1/\rho)d\bar p^*/dz^*``, and using the full square side
+``L`` and velocity ``U_{ref}`` as reference scales,
 
 ```math
 Re=\frac{U_{ref}L}{\nu},\qquad f=\frac{GL}{U_{ref}^2}.
@@ -43,7 +43,7 @@ values; the basis or residual formulation must enforce the required homogeneous 
 
 # Friction scaling
 
-For a full square cross-section of side `L`, the perimeter-averaged wall stress and conventional
+For a full square cross-section of side ``L``, the perimeter-averaged wall stress and conventional
 friction Reynolds number are
 
 ```math
@@ -53,18 +53,18 @@ Re_\tau=\frac{u_\tau(L/2)}{\nu}=\frac{Re\sqrt{|f|}}{4}.
 ```
 
 Thus friction-velocity and half-side scaling is represented on the unit-side grid by
-`SquareDuctFlow(g, 2Reτ; f=4)`. In contrast, `f=1` uses the pressure-gradient velocity `sqrt(G*L)`;
+`SquareDuctFlow(g, 2Reτ; f=4)`. In contrast, `f=1` uses the pressure-gradient velocity ``\sqrt{GL}``;
 it is not the conventional perimeter-averaged friction velocity.
 
 # Arguments
 
-- `g`: square-duct grid stored as `(x,y,z,t)`, with physical `z` streamwise.
-- `Re`: real side-length Reynolds number `U_{ref}L/ν`, multiplying viscosity as `1/Re`.
+- `g`: square-duct grid stored as `(x,y,z,t)`, with physical ``z`` streamwise.
+- `Re`: real side-length Reynolds number ``U_{ref}L/\nu``, multiplying viscosity as ``1/Re``.
 
 # Keyword arguments
 
 - `base_flow`: three-component cross-section tuple added to the steady zero Fourier mode.
-- `f`: nonzero signed uniform forcing amplitude in the physical streamwise component `w`. Zero
+- `f`: nonzero signed uniform forcing amplitude in the physical streamwise component ``w``. Zero
   throws an `ArgumentError`.
 - `mode`: `AdjointDiscrete()` or `AdjointContinuous()` for the linearised adjoint operator.
 - `fftw_flags`: FFTW planner flags forwarded to `NSEBase.construct_equations`.

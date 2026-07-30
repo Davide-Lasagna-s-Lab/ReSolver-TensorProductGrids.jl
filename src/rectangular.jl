@@ -55,7 +55,8 @@ Construct a rectangular grid from existing one-dimensional FDGrids discretisatio
 
 The common length of `xs`, `D₁`, `D₂`, `D₁⁺`, `D₂⁺`, and `ws` becomes `NI`. Those
 tuples are ordered by increasing inhomogeneous storage dimension. `scales` and `fft_dims` have the
-same length and use transform order. A periodic interval of length `L` normally uses scale `2π/L`.
+same length and use transform order. A periodic interval of length ``L`` normally uses scale
+``2π/L``.
 
 Every Fourier scale must be a positive finite real number. `grid_size` is the physical array shape
 in storage order. `axes` is the four-entry physical map
@@ -229,8 +230,9 @@ end
     points(g::RectangularGrid; dealias=false) -> Tuple
 
 Return one broadcast-compatible coordinate array per storage dimension. Bounded coordinates come
-from `g.xs`. Fourier coordinates are equispaced on `[0, 2π/scale)` without a repeated endpoint.
-With `dealias=true`, Fourier dimensions use NSEBase's odd 3/2-rule padded sizes.
+from `g.xs`. For a Fourier direction with scale ``s``, coordinates are equispaced on ``[0,2π/s)``
+without a repeated endpoint. With `dealias=true`, Fourier dimensions use NSEBase's odd 3/2-rule
+padded sizes.
 
 # Arguments
 

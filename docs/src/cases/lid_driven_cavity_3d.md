@@ -12,7 +12,8 @@ For a cavity of side ``L``, lid speed ``U_{lid}``, and kinematic viscosity ``\nu
 
 ## Canonical moving-lid lifting
 
-[`lid_driven_cavity_3d_base`](@ref) returns the default `base_flow=(U,V,nothing)`. Let ``\xi``, ``\eta``, and ``\zeta`` be the common cavity interval normalized to `[0,1]`, and define
+[`lid_driven_cavity_3d_base`](@ref) returns the default `base_flow=(U,V,nothing)`. Let ``\xi``,
+``\eta``, and ``\zeta`` be the common cavity interval normalized to ``[0,1]``, and define
 
 ```math
 F(\xi)=16\xi^2(1-\xi)^2,
@@ -28,7 +29,10 @@ U(\xi,\eta,\zeta)=F(\xi)H'(\eta)G(\zeta),
 \qquad W=0.
 ```
 
-The first two terms are divergence free and `W` is represented by `nothing`. At the upper wall, ``U=FG``; the polynomial factors taper the moving-wall velocity smoothly to zero at all four lid edges. The field vanishes on every other wall. This field lifts boundary data; it is not claimed to solve the steady Navier--Stokes equations.
+The first two terms are divergence free and ``W`` is represented by `nothing`. At the upper wall,
+``U=FG``; the polynomial factors taper the moving-wall velocity smoothly to zero at all four lid
+edges. The field vanishes on every other wall. This field lifts boundary data; it is not claimed
+to solve the steady Navier--Stokes equations.
 
 ## Symmetric equation-constructor interface
 

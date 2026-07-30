@@ -1,8 +1,8 @@
 # Square-duct flow
 
-[`SquareDuctFlow`](@ref) combines a bounded square cross-section with periodic streamwise `z` and
-time or phase `t`. Velocity is ordered as ``\boldsymbol{u}=(u,v,w)``, so the physical streamwise
-component is `w`. The returned NSEBase operator represents
+[`SquareDuctFlow`](@ref) combines a bounded square cross-section with periodic streamwise ``z`` and
+time or phase ``t``. Velocity is ordered as ``\boldsymbol{u}=(u,v,w)``, so the physical streamwise
+component is ``w``. The returned NSEBase operator represents
 
 ```math
 \partial_t\boldsymbol{u}+(\boldsymbol{u}\boldsymbol{\cdot}\nabla)\boldsymbol{u}

@@ -15,6 +15,10 @@ All notable changes to ReSolverRectangularGrids.jl will be documented in this fi
 - Analytical derivative, Laplacian, norm, shift, product-quadrature, and discrete-adjoint tests for every layout.
 - Symmetric executable examples, a full Documenter manual, public-repository metadata, and continuous integration.
 
+### Fixed
+
+- Correct Documenter markup for browser-rendered display and inline mathematics.
+
 ### Publication status
 
 - The source repository is available for development and review.

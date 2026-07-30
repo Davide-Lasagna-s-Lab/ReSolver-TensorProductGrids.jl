@@ -4,7 +4,9 @@ Bundled constructors hide axes, Fourier order, adjoint matrices, and quadrature 
 
 ## A complete custom layout
 
-The following example defines a two-dimensional physical domain with bounded `x∈[0,1]`, periodic `y`, no `z` coordinate, and a unit-period time or phase coordinate. Arrays are stored as `(x,y,t)`:
+The following example defines a two-dimensional physical domain with bounded ``x\in[0,1]``,
+periodic ``y``, no ``z`` coordinate, and a unit-period time or phase coordinate. Arrays are stored
+as `(x,y,t)`:
 
 ```@example custom-layout
 using LinearAlgebra

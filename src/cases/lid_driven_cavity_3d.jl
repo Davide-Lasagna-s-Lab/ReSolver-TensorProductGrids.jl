@@ -17,10 +17,11 @@
 @doc raw"""
     lid_driven_cavity_3d_base(g::AbstractLidDrivenCavity3DGrid) -> Tuple
 
-Return the canonical smooth divergence-free moving-lid lifting `(U,V,nothing)` for a
-three-dimensional cubic cavity.
+Return the canonical smooth divergence-free moving-lid lifting ``(U,V,0)`` for a three-dimensional
+cubic cavity. The returned tuple represents its zero third component by `nothing`.
 
-Let `ξ`, `η`, and `ζ` be physical `x`, `y`, and `z` normalized to `[0,1]`, and define
+Let ``\xi``, ``\eta``, and ``\zeta`` be physical ``x``, ``y``, and ``z`` normalized to ``[0,1]``,
+and define
 
 ```math
 F(ξ)=16ξ^2(1-ξ)^2,\qquad H(η)=η^2(η-1),\qquad
@@ -34,8 +35,8 @@ U=F(ξ)H'(η)G(ζ),\qquad
 V=-F'(ξ)H(η)G(ζ),\qquad W=0.
 ```
 
-They satisfy `\partial_xU+\partial_yV+\partial_zW=0`. At the upper `y` wall, the streamwise
-velocity is `U=FG`; all other velocity components and wall values vanish. The lid has unit maximum
+They satisfy ``\partial_xU+\partial_yV+\partial_zW=0``. At the upper ``y`` wall, the streamwise
+velocity is ``U=FG``; all other velocity components and wall values vanish. The lid has unit maximum
 speed and tapers smoothly to zero at all four of its edges.
 
 # Arguments
@@ -84,8 +85,8 @@ Construct the three-dimensional incompressible lid-driven-cavity equations
 \qquad \nabla\cdot\boldsymbol{u}=0,
 ```
 
-where `\boldsymbol{u}=(u,v,w)` on a cubic cavity. With dimensional lid speed `U_{lid}`, side length
-`L`, and kinematic viscosity `ν`,
+where ``\boldsymbol{u}=(u,v,w)`` on a cubic cavity. With dimensional lid speed ``U_{lid}``, side
+length ``L``, and kinematic viscosity ``\nu``,
 
 ```math
 Re=\frac{U_{lid}L}{\nu}.
@@ -101,7 +102,7 @@ homogeneous wall conditions through the basis or residual formulation.
 # Arguments
 
 - `g`: cubic three-dimensional cavity grid stored as `(x,y,z,t)`.
-- `Re`: real Reynolds number `U_{lid}L/ν`, multiplying viscosity as `1/Re`.
+- `Re`: real Reynolds number ``U_{lid}L/\nu``, multiplying viscosity as ``1/Re``.
 
 # Keyword arguments
 

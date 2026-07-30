@@ -17,10 +17,11 @@
 @doc raw"""
     lid_driven_cavity_2d_base(g::AbstractLidDrivenCavity2DGrid) -> Tuple
 
-Return the canonical smooth divergence-free moving-lid lifting `(U,V)` for a two-dimensional
+Return the canonical smooth divergence-free moving-lid lifting ``(U,V)`` for a two-dimensional
 cavity.
 
-Let `ξ` and `η` be the physical `x` and `y` coordinates normalized to `[0,1]`. Define
+Let ``\xi`` and ``\eta`` be the physical ``x`` and ``y`` coordinates normalized to ``[0,1]``.
+Define
 
 ```math
 F(\xi)=16\xi^2(1-\xi)^2,\qquad H(\eta)=\eta^2(\eta-1).
@@ -34,7 +35,7 @@ V=-F'(\xi)H(\eta).
 ```
 
 Because the cavity has equal side lengths, these components satisfy
-`\partial_xU+\partial_yV=0`. At the upper wall, `U=F` and `V=0`; both components vanish on the
+``\partial_xU+\partial_yV=0``. At the upper wall, ``U=F`` and ``V=0``; both components vanish on the
 other walls. The polynomial lid has unit maximum speed and tapers to zero at the upper corners,
 avoiding the discontinuities of an ideal uniform lid.
 
@@ -77,8 +78,8 @@ Construct the two-dimensional incompressible lid-driven-cavity equations
 \qquad \nabla\cdot\boldsymbol{u}=0,
 ```
 
-where `\boldsymbol{u}=(u,v)` on a square cavity. With dimensional lid speed `U_{lid}`, side length
-`L`, and kinematic viscosity `ν`,
+where ``\boldsymbol{u}=(u,v)`` on a square cavity. With dimensional lid speed ``U_{lid}``, side
+length ``L``, and kinematic viscosity ``\nu``,
 
 ```math
 Re=\frac{U_{lid}L}{\nu}.
@@ -94,7 +95,7 @@ homogeneous wall conditions through the basis or residual formulation.
 # Arguments
 
 - `g`: square two-dimensional cavity grid stored as `(x,y,t)`.
-- `Re`: real Reynolds number `U_{lid}L/ν`, multiplying viscosity as `1/Re`.
+- `Re`: real Reynolds number ``U_{lid}L/\nu``, multiplying viscosity as ``1/Re``.
 
 # Keyword arguments
 

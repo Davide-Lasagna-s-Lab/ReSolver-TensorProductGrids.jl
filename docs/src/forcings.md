@@ -27,7 +27,7 @@ quadrature. The `Ro` convention used by the channel cases is documented under
 [`ConstantBodyForce`](@ref) adds a scalar value to component `i` at the zero mode of every Fourier
 direction. The selected slice retains every bounded-grid point, so this single spectral mode
 represents a uniform physical-space force. For example, channel pressure forcing uses `i=1`, while
-square-duct forcing uses `i=3` because physical streamwise velocity is `w` there. Its amplitude
+square-duct forcing uses `i=3` because physical streamwise velocity is ``w`` there. Its amplitude
 must be nonzero: constructing `ConstantBodyForce(0)` throws an `ArgumentError`. Use `NoForce()`
 when the equations have no body force instead of storing an inert constant-force policy.
 

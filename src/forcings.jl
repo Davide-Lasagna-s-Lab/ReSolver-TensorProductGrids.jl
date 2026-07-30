@@ -13,15 +13,15 @@
 @doc raw"""
     CoriolisForce(Ro::Real)
 
-Construct the skew-symmetric Coriolis force coupling streamwise velocity `u` and wall-normal
-velocity `v`. For a forward evaluation,
+Construct the skew-symmetric Coriolis force coupling streamwise velocity ``u`` and wall-normal
+velocity ``v``. For a forward evaluation,
 
 ```math
 \boldsymbol{f}_{Ro} = Ro\,(v, -u, 0)
 ```
 
-for a three-component state `(u, v, w)`; the trailing zero is absent for a two-component state.
-Continuous- and discrete-adjoint evaluations apply the transpose, `-\boldsymbol{f}_{Ro}`. The
+for a three-component state ``(u, v, w)``; the trailing zero is absent for a two-component state.
+Continuous- and discrete-adjoint evaluations apply the transpose, ``-\boldsymbol{f}_{Ro}``. The
 object stores only the dimensionless rotation coefficient `Ro`; the coupled components are always
 one and two.
 
@@ -62,8 +62,9 @@ added only at the zero wavenumber of every Fourier direction; the selected slice
 every finite-difference point, so the value is uniform throughout the bounded coordinates.
 
 `i` is the one-based index of the component in the `VectorField` passed to the force. For a channel
-state ordered as `(u, v, w)`, streamwise forcing uses `i=1`. A square duct is also stored as
-`(u, v, w)`, but its physical streamwise direction is `z`, so [`SquareDuctFlow`](@ref) uses `i=3`.
+state ordered as ``(u, v, w)``, streamwise forcing uses `i=1`. A square duct is also stored as
+``(u, v, w)``, but its physical streamwise direction is ``z``, so [`SquareDuctFlow`](@ref) uses
+`i=3`.
 The state-independent contribution is applied only for `Forward()` evaluation of the nonlinear
 equations. Its linearisation is zero, so continuous- and discrete-adjoint calls leave `out`
 unchanged.

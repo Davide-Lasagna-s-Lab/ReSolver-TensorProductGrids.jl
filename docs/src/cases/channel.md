@@ -62,8 +62,9 @@ U(y)=\frac{Re_\tau}{2}(1-y^2)\quad\text{when }Re=Re_\tau,\ f=1.
 
 The default [`plane_poiseuille_base`](@ref) is the unit-centreline profile ``1-y^2``. It is a
 convenient reference or boundary-data lifting, but it is not the equilibrium for arbitrary `Re`
-and `f`. In particular, setting `f=1` and passing `Reτ` requires scaling the profile by `Reτ/2`.
-For a different velocity scale, use ``f=(Re_\tau/Re)^2`` for positive downstream forcing.
+and `f`. In particular, setting `f=1` and passing `Reτ` requires scaling the profile by
+``Re_\tau/2``. For a different velocity scale, use ``f=(Re_\tau/Re)^2`` for positive downstream
+forcing.
 
 ```@example channel_cases
 using NSEBase

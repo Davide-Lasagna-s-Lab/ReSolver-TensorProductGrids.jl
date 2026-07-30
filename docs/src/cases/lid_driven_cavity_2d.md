@@ -12,7 +12,8 @@ For a cavity of side ``L``, lid speed ``U_{lid}``, and kinematic viscosity ``\nu
 
 ## Canonical moving-lid lifting
 
-[`lid_driven_cavity_2d_base`](@ref) returns the default `base_flow=(U,V)`. Let ``\xi`` and ``\eta`` be the common cavity interval normalized to `[0,1]`, and define
+[`lid_driven_cavity_2d_base`](@ref) returns the default `base_flow=(U,V)`. Let ``\xi`` and ``\eta``
+be the common cavity interval normalized to ``[0,1]``, and define
 
 ```math
 F(\xi)=16\xi^2(1-\xi)^2,

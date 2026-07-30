@@ -3,12 +3,15 @@
 The repository contains one standalone script for each layout. They deliberately use the same sequence:
 
 1. construct a modest grid;
-2. define a separable analytical field with `exp(cos(·))` in every active homogeneous direction;
+2. define a separable analytical field with ``\exp(\cos(\cdot))`` in every active homogeneous
+   direction;
 3. compare a Fourier derivative with its exact value;
 4. compare the NSEBase norm with an analytical integral;
 5. construct the matching incompressible equations, using the canonical case default where one is provided.
 
-Because `exp(cos\theta)` has nonzero coefficients at all integer wavenumbers, these examples exercise the full represented Fourier band. The bounded factors are low-degree polynomials whose derivatives and quadrature integrals are exact to the reported tolerance.
+Because ``\exp(\cos\theta)`` has nonzero coefficients at all integer wavenumbers, these examples
+exercise the full represented Fourier band. The bounded factors are low-degree polynomials whose
+derivatives and quadrature integrals are exact to the reported tolerance.
 
 ## Run all examples
 
@@ -40,17 +43,18 @@ Every script is executed by `Pkg.test()` as well as this documentation page. An 
 
 The periodic factor has mean square
 
-\[
+```math
 \frac{1}{2\pi}\int_0^{2\pi}e^{2\cos\theta}\,d\theta
 =I_0(2)
 =\sum_{k=0}^{\infty}\frac{1}{(k!)^2}.
-\]
+```
 
-The test scripts evaluate the rapidly convergent series without adding a special-function dependency. The bounded polynomial `b(x)=(x-a)(b-x)` satisfies
+The test scripts evaluate the rapidly convergent series without adding a special-function
+dependency. The bounded polynomial ``b(x)=(x-a)(b-x)`` satisfies
 
-\[
+```math
 \int_a^b b(x)^2\,dx=\frac{(b-a)^5}{30}.
-\]
+```
 
 Tensor-product separability then gives an exact norm for every layout, matching the lazy product quadrature used in the implementation.
 
