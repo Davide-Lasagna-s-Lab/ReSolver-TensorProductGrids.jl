@@ -5,7 +5,7 @@ Bundled constructors hide axes, Fourier order, adjoint matrices, and quadrature 
 ## A complete custom layout
 
 The following example defines a two-dimensional physical domain with bounded ``x\in[0,1]``,
-periodic ``y``, no ``z`` coordinate, and a unit-period time or phase coordinate. Arrays are stored
+periodic ``y``, no ``z`` coordinate, and a ``2π``-periodic phase coordinate. Arrays are stored
 as `(x,y,t)`:
 
 ```@example custom-layout
@@ -26,7 +26,7 @@ Dx2a = adjoint(Dx2, wx)
 
 axes = (1, 2, nothing, 3)
 fft_order = (2, 3)
-g = RectangularGrid((x,), (Dx,), (Dx2,), (Dxa,), (Dx2a,), (wx,), (β, 2π),
+g = RectangularGrid((x,), (Dx,), (Dx2,), (Dxa,), (Dx2a,), (wx,), (β, 1),
                     (Nx, Ny, Nt), axes, fft_order)
 
 @assert size(g) == (Nx, Ny, Nt)

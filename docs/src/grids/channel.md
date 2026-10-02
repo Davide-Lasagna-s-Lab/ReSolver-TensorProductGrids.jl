@@ -11,7 +11,7 @@ stored with wall-normal `y` first so that each finite-difference operation acts 
 | streamwise `x` | 2 | Fourier on ``[0, 2\pi/\alpha)`` |
 | wall-normal `y` | 1 | FDGrids on the fixed interval ``[-1, 1]`` |
 | spanwise `z` | 3 | Fourier on ``[0, 2\pi/\beta)`` |
-| time or phase `t` | 4 | Fourier on ``[0, 1)`` |
+| time or phase `t` | 4 | Fourier on ``[0,2\pi)`` |
 
 Thus `size(g) == (Ny, Nx, Nz, Nt)` and `points(g)` returns `(y, x, z, t)` in storage order.
 Streamwise `x` is the real-to-complex transform direction; `z` and `t` use complex transforms.

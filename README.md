@@ -25,7 +25,7 @@ The grid describes geometry and differentiation. Boundary conditions remain expl
 | 3D cubic lid-driven cavity | `LidDrivenCavity3DGrid(N)` | `[0,1]³` | `(x,y,z,t)` | `x,y,z` | `t` |
 | Square duct | `SquareDuctGrid(N, Nz)` | `[0,1]²`; periodic `z` | `(x,y,z,t)` | `x,y` | `z,t` |
 
-All Fourier resolutions are positive and odd. `Nt=1` represents a steady field, while larger odd `Nt` values represent a unit-period time or phase coordinate.
+All Fourier resolutions are positive and odd. `Nt=1` represents a steady field, while larger odd `Nt` values represent a ``2π``-periodic phase coordinate.
 
 ## Installation
 

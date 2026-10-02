@@ -11,7 +11,7 @@
         @test wavenumber_scale(g, 1) == 1
         @test wavenumber_scale(g, 2) == 1.25
         @test wavenumber_scale(g, 3) == 0.75
-        @test wavenumber_scale(g, 4) == 2π
+        @test wavenumber_scale(g, 4) == 1
         @test_throws BoundsError wavenumber_scale(g, 0)
         @test_throws BoundsError wavenumber_scale(g, 5)
 
@@ -21,7 +21,7 @@
         @test vec(y) == g.xs[1]
         @test vec(x) ≈ (0:6) .* (2π / (1.25 * 7))
         @test vec(z) ≈ (0:4) .* (2π / (0.75 * 5))
-        @test vec(t) ≈ (0:2) ./ 3
+        @test vec(t) ≈ (0:2) .* (2π / 3)
 
         padded = points(g; dealias=true)
         expected_sizes = (13, cld(3 * 7, 2) | 1, cld(3 * 5, 2) | 1, cld(3 * 3, 2) | 1)

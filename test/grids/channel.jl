@@ -4,20 +4,20 @@
     g = ChannelGrid(Nx, Ny, Nz; Nt, α, β, dist=FDGrids.GaussLobattoGrid(), width=7)
 
     u(y, x, z, t) = bounded_profile(y, ylim) * periodic_profile(α * x) *
-                     periodic_profile(β * z) * periodic_profile(2π * t)
+                     periodic_profile(β * z) * periodic_profile(t)
     ux(y, x, z, t) = bounded_profile(y, ylim) * α * periodic_profile_d1(α * x) *
-                      periodic_profile(β * z) * periodic_profile(2π * t)
+                      periodic_profile(β * z) * periodic_profile(t)
     uy(y, x, z, t) = bounded_profile_d1(y, ylim) * periodic_profile(α * x) *
-                      periodic_profile(β * z) * periodic_profile(2π * t)
+                      periodic_profile(β * z) * periodic_profile(t)
     uz(y, x, z, t) = bounded_profile(y, ylim) * periodic_profile(α * x) *
-                      β * periodic_profile_d1(β * z) * periodic_profile(2π * t)
+                      β * periodic_profile_d1(β * z) * periodic_profile(t)
     ut(y, x, z, t) = bounded_profile(y, ylim) * periodic_profile(α * x) *
-                      periodic_profile(β * z) * 2π * periodic_profile_d1(2π * t)
+                      periodic_profile(β * z) * periodic_profile_d1(t)
     Δu(y, x, z, t) = (bounded_profile_d2(y, ylim) * periodic_profile(α * x) *
         periodic_profile(β * z) + bounded_profile(y, ylim) *
         (α^2 * periodic_profile_d2(α * x) * periodic_profile(β * z) +
          β^2 * periodic_profile(α * x) * periodic_profile_d2(β * z))) *
-        periodic_profile(2π * t)
+        periodic_profile(t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
         steady = ChannelGrid(Nx, Ny, Nz)
@@ -34,7 +34,7 @@
         @test inhomogeneous_physical_dims(g) == (:y,)
         @test size(steady) == (Ny, Nx, Nz, 1)
         @test weights(g) ≈ only(g.ws)
-        @test g.scales == (α, β, 2π)
+        @test g.scales == (α, β, 1)
         @test size(growto(g, (11, 13, 15))) == (Ny, 11, 13, 15)
 
         supplied = ChannelGrid(g.xs[1], Nx, Nz, Nt, α, β, g.D₁[1], g.D₂[1],
@@ -69,13 +69,13 @@
 
         sx, sz, st = 0.37, 1.11, 0.23
         shifted(y, x, z, t) = bounded_profile(y, ylim) * periodic_profile(α * (x + sx)) *
-                               periodic_profile(β * (z + sz)) * periodic_profile(2π * (t + st))
+                               periodic_profile(β * (z + sz)) * periodic_profile(t + st)
         @test shift!(copy(û), (sx, sz, st)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
         v(y, x, z, t) = dual_bounded_profile(y, ylim) * periodic_profile(α * x + 0.2) *
-                         periodic_profile(β * z + 0.3) * periodic_profile(2π * t + 0.4)
+                         periodic_profile(β * z + 0.3) * periodic_profile(t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 
         for derivative! in (ddx!, ddy!, ddz!, ddt!)

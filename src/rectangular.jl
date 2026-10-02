@@ -88,7 +88,7 @@ A validated [`RectangularGrid`](@ref) with lazy tensor-product quadrature weight
 
 ```julia
 g = RectangularGrid((y,), (Dy,), (Dy2,), (Dya,), (Dy2a,), (wy,),
-                    (α, β, 2π), (length(y), Nx, Nz, Nt),
+                    (α, β, 1), (length(y), Nx, Nz, Nt),
                     (2, 1, 3, 4), (2, 3, 4))
 ```
 """

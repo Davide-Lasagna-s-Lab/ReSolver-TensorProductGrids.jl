@@ -11,7 +11,7 @@ discretisation, preserving the geometric and numerical symmetry of the square.
 | cross-stream `x` | 1 | FDGrids on ``[0, 1]`` |
 | cross-stream `y` | 2 | the same FDGrids discretisation on ``[0, 1]`` |
 | streamwise `z` | 3 | Fourier on ``[0, 2\pi/\alpha)`` |
-| time or phase `t` | 4 | Fourier on ``[0, 1)`` |
+| time or phase `t` | 4 | Fourier on ``[0,2\pi)`` |
 
 The direct layout gives `size(g) == (N, N, Nz, Nt)` and `points(g) == (x, y, z, t)`. Sharing is
 literal in the stored bounded data: `g.xs[1] === g.xs[2]`, and the corresponding derivative

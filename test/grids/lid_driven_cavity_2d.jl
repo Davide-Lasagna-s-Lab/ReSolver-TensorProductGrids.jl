@@ -4,16 +4,16 @@
     g = LidDrivenCavity2DGrid(N; Nt, lim, dist=FDGrids.GaussLobattoGrid(), width=7)
 
     u(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                  periodic_profile(2π * t)
+                  periodic_profile(t)
     ux(x, y, t) = bounded_profile_d1(x, lim) * bounded_profile(y, lim) *
-                   periodic_profile(2π * t)
+                   periodic_profile(t)
     uy(x, y, t) = bounded_profile(x, lim) * bounded_profile_d1(y, lim) *
-                   periodic_profile(2π * t)
+                   periodic_profile(t)
     ut(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                   2π * periodic_profile_d1(2π * t)
+                   periodic_profile_d1(t)
     Δu(x, y, t) = (bounded_profile_d2(x, lim) * bounded_profile(y, lim) +
                     bounded_profile(x, lim) * bounded_profile_d2(y, lim)) *
-                   periodic_profile(2π * t)
+                   periodic_profile(t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
         steady = LidDrivenCavity2DGrid(N)
@@ -31,7 +31,7 @@
         @test inhomogeneous_physical_dims(g) == (:x, :y)
         @test size(steady) == (N, N, 1)
         @test weights(g) ≈ g.ws[1] * transpose(g.ws[2])
-        @test g.scales == (2π,)
+        @test g.scales == (1,)
         @test size(growto(g, (11,))) == (N, N, 11)
         @test all(object -> object === first(g.xs), g.xs)
         @test all(object -> object === first(g.D₁), g.D₁)
@@ -62,13 +62,13 @@
 
         st = 0.23
         shifted(x, y, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                            periodic_profile(2π * (t + st))
+                            periodic_profile(t + st)
         @test shift!(copy(û), (st,)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
         v(x, y, t) = dual_bounded_profile(x, lim) * dual_bounded_profile(y, lim) *
-                      periodic_profile(2π * t + 0.4)
+                      periodic_profile(t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 
         for derivative! in (ddx!, ddy!, ddt!)

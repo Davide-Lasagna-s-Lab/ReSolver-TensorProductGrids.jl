@@ -9,20 +9,20 @@
 | horizontal `x` | 1 | FDGrids on ``[0,1]`` |
 | vertical `y` | 2 | the same FDGrids discretisation on ``[0,1]`` |
 | spanwise `z` | 3 | the same FDGrids discretisation on ``[0,1]`` |
-| time or phase `t` | 4 | Fourier on ``[0,1)`` |
+| time or phase `t` | 4 | Fourier on ``[0,2\pi)`` |
 
 The direct layout gives `size(g) == (N, N, N, Nt)` and `points(g) == (x, y, z, t)`, with broadcast-compatible coordinate arrays. Sharing is literal: all three entries of `g.xs`, `g.D₁`, `g.D₂`, `g.D₁⁺`, `g.D₂⁺`, and `g.ws` refer to their respective common bounded object.
 
 ## Differentiation in a Fourier direction
 
-For `Nt > 1`, the unit-period `t` coordinate represents a Fourier phase. The profile below uses ``\exp(\cos(2\pi t))`` to exercise every temporal wavenumber while retaining a smooth field that vanishes on all spatial faces.
+For `Nt > 1`, the ``2\pi``-periodic `t` coordinate represents a Fourier phase. The profile below uses ``\exp(\cos t)`` to exercise every temporal wavenumber while retaining a smooth field that vanishes on all spatial faces.
 
 ```@example cavity_3d_grid_derivative
 using NSEBase, ReSolverRectangularGrids
 
 g = LidDrivenCavity3DGrid(13; Nt=19, width=5)
-u(x, y, z, t) = x * (1 - x) * y * (1 - y) * z * (1 - z) * exp(cos(2π * t))
-ut(x, y, z, t) = -2π * sin(2π * t) * u(x, y, z, t)
+u(x, y, z, t) = x * (1 - x) * y * (1 - y) * z * (1 - z) * exp(cos(t))
+ut(x, y, z, t) = -sin(t) * u(x, y, z, t)
 
 û = FFT(Field(g, u))
 numerical = ddt!(FTField(g), û)

@@ -31,7 +31,7 @@ const SQUARE_DUCT_AXES = (1, 2, 3, 4)
     SQUARE_DUCT_FFT_ORDER = (3, 4)
 
 Square-duct Fourier dimensions in transform order. Streamwise `z` is real-to-complex and
-unit-period `t` uses a complex transform.
+phase `t` uses a complex transform.
 """
 const SQUARE_DUCT_FFT_ORDER = (3, 4)
 
@@ -79,8 +79,8 @@ const SquareDuctGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
                    dist=FDGrids.GaussLobattoGrid(), width=5, T=Float64)
 
 Construct a square-duct grid with bounded cross-section ``[0,1]×[0,1]``, periodic streamwise
-length ``L_z=2π/α``, and unit-period time or phase. The stored size is `(N, N, Nz, Nt)` and the
-Fourier scales are `(α, 2π)`.
+length ``L_z=2π/α``, and a ``2π``-periodic phase. The stored size is `(N, N, Nz, Nt)` and the
+Fourier scales are `(α, 1)`.
 
 One FDGrids discretisation is reused in both cross-section directions, so corresponding entries in
 `xs`, `D₁`, `D₂`, `D₁⁺`, `D₂⁺`, and `ws` have identical object identity. `Nz` and `Nt` must be
@@ -119,6 +119,6 @@ function SquareDuctGrid(N::Int, Nz::Int; Nt::Int=1, α::Real=1,
                         T::Type{<:Real}=Float64)
     x, D₁, D₂, D₁⁺, D₂⁺, w = _fd_direction(N, (0, 1), dist, width, T)
     return RectangularGrid((x, x), (D₁, D₁), (D₂, D₂), (D₁⁺, D₁⁺), (D₂⁺, D₂⁺),
-                           (w, w), (α, 2π), (N, N, Nz, Nt), SQUARE_DUCT_AXES,
+                           (w, w), (α, 1), (N, N, Nz, Nt), SQUARE_DUCT_AXES,
                            SQUARE_DUCT_FFT_ORDER, T)
 end

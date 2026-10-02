@@ -4,19 +4,19 @@
     g = LidDrivenCavity3DGrid(N; Nt, lim, dist=FDGrids.GaussLobattoGrid(), width=7)
 
     u(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                     bounded_profile(z, lim) * periodic_profile(2π * t)
+                     bounded_profile(z, lim) * periodic_profile(t)
     ux(x, y, z, t) = bounded_profile_d1(x, lim) * bounded_profile(y, lim) *
-                      bounded_profile(z, lim) * periodic_profile(2π * t)
+                      bounded_profile(z, lim) * periodic_profile(t)
     uy(x, y, z, t) = bounded_profile(x, lim) * bounded_profile_d1(y, lim) *
-                      bounded_profile(z, lim) * periodic_profile(2π * t)
+                      bounded_profile(z, lim) * periodic_profile(t)
     uz(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                      bounded_profile_d1(z, lim) * periodic_profile(2π * t)
+                      bounded_profile_d1(z, lim) * periodic_profile(t)
     ut(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                      bounded_profile(z, lim) * 2π * periodic_profile_d1(2π * t)
+                      bounded_profile(z, lim) * periodic_profile_d1(t)
     Δu(x, y, z, t) = (bounded_profile_d2(x, lim) * bounded_profile(y, lim) *
         bounded_profile(z, lim) + bounded_profile(x, lim) * bounded_profile_d2(y, lim) *
         bounded_profile(z, lim) + bounded_profile(x, lim) * bounded_profile(y, lim) *
-        bounded_profile_d2(z, lim)) * periodic_profile(2π * t)
+        bounded_profile_d2(z, lim)) * periodic_profile(t)
 
     @testset verbose=true "Construction, layout, and product quadrature                " begin
         steady = LidDrivenCavity3DGrid(N)
@@ -36,7 +36,7 @@
         expected_weights = reshape(g.ws[1], :, 1, 1) .* reshape(g.ws[2], 1, :, 1) .*
                            reshape(g.ws[3], 1, 1, :)
         @test weights(g) ≈ expected_weights
-        @test g.scales == (2π,)
+        @test g.scales == (1,)
         @test size(growto(g, (11,))) == (N, N, N, 11)
         @test all(object -> object === first(g.xs), g.xs)
         @test all(object -> object === first(g.D₁), g.D₁)
@@ -67,13 +67,13 @@
 
         st = 0.23
         shifted(x, y, z, t) = bounded_profile(x, lim) * bounded_profile(y, lim) *
-                               bounded_profile(z, lim) * periodic_profile(2π * (t + st))
+                               bounded_profile(z, lim) * periodic_profile(t + st)
         @test shift!(copy(û), (st,)) ≈ FFT(Field(g, shifted)) atol=3e-7 rtol=3e-7
     end
 
     @testset verbose=true "Quadrature-weighted discrete adjoints                       " begin
         v(x, y, z, t) = dual_bounded_profile(x, lim) * dual_bounded_profile(y, lim) *
-                         dual_bounded_profile(z, lim) * periodic_profile(2π * t + 0.4)
+                         dual_bounded_profile(z, lim) * periodic_profile(t + 0.4)
         û, v̂ = FFT(Field(g, u)), FFT(Field(g, v))
 
         for derivative! in (ddx!, ddy!, ddz!, ddt!)

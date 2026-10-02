@@ -30,7 +30,7 @@ const LID_DRIVEN_CAVITY_3D_AXES = (1, 2, 3, 4)
 """
     LID_DRIVEN_CAVITY_3D_FFT_ORDER = (4,)
 
-The 3D cavity's only Fourier dimension, corresponding to unit-period time or phase `t`.
+The 3D cavity's only Fourier dimension, corresponding to the ``2π``-periodic phase `t`.
 """
 const LID_DRIVEN_CAVITY_3D_FFT_ORDER = (4,)
 
@@ -70,7 +70,8 @@ const AbstractLidDrivenCavity3DGrid{T} =
     LidDrivenCavity3DGrid
 
 Concrete [`RectangularGrid{3}`](@ref) alias for the 3D cavity layout. Its stored size is
-`(N, N, N, Nt)` and its only Fourier scale is the unit-period time or phase scale ``2π``. The
+`(N, N, N, Nt)` and its only Fourier scale is the phase scale one, with
+``t∈[0,2π)``. The
 constructor shares its points, derivative matrices, adjoints, and weights among `x`, `y`, and `z`.
 """
 const LidDrivenCavity3DGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
@@ -89,7 +90,7 @@ const LidDrivenCavity3DGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
 Construct a fully bounded cubic 3D cavity stored as `(x, y, z, t)`. All spatial directions use `N`
 collocation points on `lim`. One FDGrids discretisation is reused in `x`, `y`, and `z`, so
 corresponding entries in `xs`, `D₁`, `D₂`, `D₁⁺`, `D₂⁺`, and `ws` have identical object identity.
-`Nt` is a positive odd unit-period time or phase resolution; `Nt=1` represents a steady field.
+`Nt` is a positive odd phase resolution on ``[0,2π)``; `Nt=1` represents a steady field.
 
 The grid includes boundary points when its FDGrids distributions do, but it does not prescribe the
 driven wall, lid velocity, or no-slip values.
@@ -122,7 +123,7 @@ function LidDrivenCavity3DGrid(N::Int; Nt::Int=1, lim::NTuple{2, <:Real}=(0, 1),
                                width::Int=5, T::Type{<:Real}=Float64)
     x, D₁, D₂, D₁⁺, D₂⁺, w = _fd_direction(N, lim, dist, width, T)
     return RectangularGrid((x, x, x), (D₁, D₁, D₁), (D₂, D₂, D₂),
-                           (D₁⁺, D₁⁺, D₁⁺), (D₂⁺, D₂⁺, D₂⁺), (w, w, w), (2π,),
+                           (D₁⁺, D₁⁺, D₁⁺), (D₂⁺, D₂⁺, D₂⁺), (w, w, w), (1,),
                            (N, N, N, Nt), LID_DRIVEN_CAVITY_3D_AXES,
                            LID_DRIVEN_CAVITY_3D_FFT_ORDER, T)
 end

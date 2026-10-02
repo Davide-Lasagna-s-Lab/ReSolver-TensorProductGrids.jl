@@ -26,9 +26,10 @@ k_{\mathrm{physical}} = n\kappa,\qquad L=\frac{2\pi}{\kappa}.
 ```
 
 Spatial scales are passed as constructor keywords such as ``\alpha=2\pi/L_x`` and
-``\beta=2\pi/L_z``. Every bundled temporal coordinate is a unit-period phase ``t\in[0,1)`` with
-scale ``2\pi``. A physical or nondimensional period ``P`` is introduced in the governing residual
-through the corresponding ``1/P`` time-derivative factor.
+``\beta=2\pi/L_z``. Every bundled temporal coordinate is a phase ``s\in[0,2\pi)`` with
+scale one, so temporal mode ``h`` has derivative ``ih``. A physical or nondimensional period ``P``
+is introduced in the governing residual through the fundamental frequency ``\omega=2\pi/P``, as in
+ReSolver's residual ``\omega\,\partial_s u - N(u)``.
 
 All Fourier sizes are odd to avoid an unpaired Nyquist mode. `Nt=1` leaves only the temporal mean and represents a steady field.
 

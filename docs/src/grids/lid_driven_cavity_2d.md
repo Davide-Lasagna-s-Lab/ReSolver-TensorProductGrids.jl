@@ -9,20 +9,20 @@
 | horizontal `x` | 1 | FDGrids on ``[0,1]`` |
 | vertical `y` | 2 | the same FDGrids discretisation on ``[0,1]`` |
 | spanwise `z` | absent | not represented by this two-dimensional grid |
-| time or phase `t` | 3 | Fourier on ``[0,1)`` |
+| time or phase `t` | 3 | Fourier on ``[0,2\pi)`` |
 
 The direct layout gives `size(g) == (N, N, Nt)` and `points(g) == (x, y, t)`, with each coordinate shaped for broadcasting over a field. Sharing is literal in the stored bounded data: `g.xs[1] === g.xs[2]`, and the corresponding derivative matrices, adjoints, and quadrature weights are the same objects.
 
 ## Differentiation in a Fourier direction
 
-For `Nt > 1`, `t` is a homogeneous unit-period coordinate. The following example differentiates a field containing ``\exp(\cos(2\pi t))``, whose Fourier series exercises every temporal wavenumber.
+For `Nt > 1`, `t` is a homogeneous ``2\pi``-periodic phase coordinate. The following example differentiates a field containing ``\exp(\cos t)``, whose Fourier series exercises every temporal wavenumber.
 
 ```@example cavity_2d_grid_derivative
 using NSEBase, ReSolverRectangularGrids
 
 g = LidDrivenCavity2DGrid(13; Nt=19, width=5)
-u(x, y, t) = x * (1 - x) * y * (1 - y) * exp(cos(2π * t))
-ut(x, y, t) = -2π * sin(2π * t) * u(x, y, t)
+u(x, y, t) = x * (1 - x) * y * (1 - y) * exp(cos(t))
+ut(x, y, t) = -sin(t) * u(x, y, t)
 
 û = FFT(Field(g, u))
 numerical = ddt!(FTField(g), û)

@@ -10,8 +10,8 @@ let
     x, y, t = points(grid)
 
     periodic_norm2 = sum(inv(float(factorial(k)))^2 for k in 0:20)
-    u(x, y, t) = x * (1 - x) * y * (1 - y) * exp(cos(2π * t))
-    ut(x, y, t) = -2π * sin(2π * t) * u(x, y, t)
+    u(x, y, t) = x * (1 - x) * y * (1 - y) * exp(cos(t))
+    ut(x, y, t) = -sin(t) * u(x, y, t)
 
     û = FFT(Field(grid, u))
     numerical = ddt!(FTField(grid), û)

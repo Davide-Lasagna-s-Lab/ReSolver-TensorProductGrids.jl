@@ -31,7 +31,7 @@ const LID_DRIVEN_CAVITY_2D_AXES = (1, 2, nothing, 3)
 """
     LID_DRIVEN_CAVITY_2D_FFT_ORDER = (3,)
 
-The 2D cavity's only Fourier dimension, corresponding to unit-period time or phase `t`.
+The 2D cavity's only Fourier dimension, corresponding to the ``2π``-periodic phase `t`.
 """
 const LID_DRIVEN_CAVITY_2D_FFT_ORDER = (3,)
 
@@ -71,7 +71,8 @@ const AbstractLidDrivenCavity2DGrid{T} =
     LidDrivenCavity2DGrid
 
 Concrete [`RectangularGrid{2}`](@ref) alias for the 2D cavity layout. Its stored size is
-`(N, N, Nt)` and its only Fourier scale is the unit-period time or phase scale ``2π``. The
+`(N, N, Nt)` and its only Fourier scale is the phase scale one, with
+``t∈[0,2π)``. The
 constructor shares its points, derivative matrices, adjoints, and weights between `x` and `y`.
 """
 const LidDrivenCavity2DGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
@@ -90,7 +91,7 @@ const LidDrivenCavity2DGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
 Construct a square bounded 2D cavity stored as `(x, y, t)`. Both spatial directions use `N`
 collocation points on `lim`. One FDGrids discretisation is reused in `x` and `y`, so corresponding
 entries in `xs`, `D₁`, `D₂`, `D₁⁺`, `D₂⁺`, and `ws` have identical object identity. `Nt` is a
-positive odd unit-period time or phase resolution; `Nt=1` represents a steady field.
+positive odd phase resolution on ``[0,2π)``; `Nt=1` represents a steady field.
 
 The grid includes boundary points when its FDGrids distributions do, but does not prescribe a
 moving-lid profile or no-slip values.
@@ -123,6 +124,6 @@ function LidDrivenCavity2DGrid(N::Int; Nt::Int=1, lim::NTuple{2, <:Real}=(0, 1),
                                width::Int=5, T::Type{<:Real}=Float64)
     x, D₁, D₂, D₁⁺, D₂⁺, w = _fd_direction(N, lim, dist, width, T)
     return RectangularGrid((x, x), (D₁, D₁), (D₂, D₂), (D₁⁺, D₁⁺), (D₂⁺, D₂⁺),
-                           (w, w), (2π,), (N, N, Nt), LID_DRIVEN_CAVITY_2D_AXES,
+                           (w, w), (1,), (N, N, Nt), LID_DRIVEN_CAVITY_2D_AXES,
                            LID_DRIVEN_CAVITY_2D_FFT_ORDER, T)
 end

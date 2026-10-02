@@ -68,7 +68,7 @@ const AbstractChannelGrid{T} = AbstractGrid{T, 4, CHANNEL_AXES, CHANNEL_FFT_ORDE
     ChannelGrid
 
 Concrete [`RectangularGrid{1}`](@ref) alias for the channel layout. Its stored size is
-`(Ny, Nx, Nz, Nt)` and its Fourier scales are `(α, β, 2π)`.
+`(Ny, Nx, Nz, Nt)` and its Fourier scales are `(α, β, 1)`.
 """
 const ChannelGrid{T, S, XS, D1, D2, A1, A2, WS, WP} = RectangularGrid{
     1, T, S, 4, CHANNEL_AXES, CHANNEL_FFT_ORDER, XS, D1, D2, A1, A2, WS, WP, 3,
@@ -86,8 +86,8 @@ Construct a channel grid stored as `(y, x, z, t)`.
 
 `Ny` wall-normal points span the fixed half-height interval ``[-1,1]`` and use the selected FDGrids
 distribution. `Nx`, `Nz`, and `Nt` are positive odd Fourier resolutions. The streamwise and
-spanwise wavenumber scales are ``α=2π/L_x`` and ``β=2π/L_z``; the unit-period time or phase scale
-is ``2π``. `Nt=1` represents a steady or time-independent field.
+spanwise wavenumber scales are ``α=2π/L_x`` and ``β=2π/L_z``; the phase scale is one, so
+``t∈[0,2π)``. `Nt=1` represents a steady or time-independent field.
 
 `width` is the odd FDGrids stencil width used by both first and second derivatives. Weighted
 adjoints are constructed from the FDGrids quadrature weights. The default Gauss–Lobatto grid
@@ -123,7 +123,7 @@ function ChannelGrid(Nx::Int, Ny::Int, Nz::Int; Nt::Int=1, α::Real=1, β::Real=
                      dist::FDGrids.AbstractGridDistribution=FDGrids.GaussLobattoGrid(),
                      width::Int=5, T::Type{<:Real}=Float64)
     y, Dy, Dy2, Dya, Dy2a, wy = _fd_direction(Ny, (-1, 1), dist, width, T)
-    return RectangularGrid((y,), (Dy,), (Dy2,), (Dya,), (Dy2a,), (wy,), (α, β, 2π),
+    return RectangularGrid((y,), (Dy,), (Dy2,), (Dya,), (Dy2a,), (wy,), (α, β, 1),
                            (Ny, Nx, Nz, Nt), CHANNEL_AXES, CHANNEL_FFT_ORDER, T)
 end
 
@@ -163,6 +163,6 @@ function ChannelGrid(y::AbstractVector, Nx::Int, Nz::Int, Nt::Int, α::Real, β:
     (minimum(y) ≈ -1 && maximum(y) ≈ 1) ||
         throw(ArgumentError("wall-normal points must span [-1, 1]"))
     Ny = length(y)
-    return RectangularGrid((y,), (Dy,), (Dy2,), (Dya,), (Dy2a,), (wy,), (α, β, 2π),
+    return RectangularGrid((y,), (Dy,), (Dy2,), (Dya,), (Dy2a,), (wy,), (α, β, 1),
                            (Ny, Nx, Nz, Nt), CHANNEL_AXES, CHANNEL_FFT_ORDER, T)
 end
