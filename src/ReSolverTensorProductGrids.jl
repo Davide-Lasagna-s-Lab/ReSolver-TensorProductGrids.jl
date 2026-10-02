@@ -9,7 +9,7 @@ import FDGrids
 import ReSolverFlowsBase: derivative_matrix, growto, points, wavenumber_scale, weights
 
 using ReSolverFlowsBase: AbstractGrid, Direct, DiscreteAdjoint, fft_storage_dims, get_padded_size,
-                         inhomogeneous_storage_dims
+                         inhomogeneous_storage_dims, spatial_fft_storage_dims
 
 export TensorProductGrid, TensorProductWeights
 

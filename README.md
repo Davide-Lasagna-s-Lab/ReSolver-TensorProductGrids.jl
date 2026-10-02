@@ -9,7 +9,9 @@ weights, times one or more periodic Fourier directions.
 A bounded direction is described by its collocation points `x`, first- and second-derivative
 matrices `D₁`, `D₂`, their discrete adjoints `D₁⁺`, `D₂⁺`, and quadrature weights `w`. A Fourier
 direction of period `L` is described by its wavenumber scale `2π/L`: the integer mode `n` has
-wavenumber `n 2π/L`. The grid is built from these data, one tuple entry per bounded direction:
+wavenumber `n 2π/L`. The time phase `s ∈ [0, 2π)` is a Fourier direction of scale one, with no
+entry among the scales: physical time is `t = s/ω`, and the frequency `ω` is an unknown of the
+search, not part of the grid. The grid is built from these data, one tuple entry per bounded direction:
 
 ```julia
 using FDGrids, ReSolverTensorProductGrids
@@ -20,9 +22,9 @@ y, w = fd.xs, fd.ws
 D₁, D₂ = DiffMatrix(y, 7, 1), DiffMatrix(y, 7, 2)
 
 g = TensorProductGrid((y,), (D₁,), (D₂,), (adjoint(D₁, w),), (adjoint(D₂, w),), (w,),
-                      (2π/Lx, 2π/Lz, 1),   # wavenumber scales of x, z, t
+                      (2π/Lx, 2π/Lz),      # wavenumber scales of x and z
                       (Ny, Nx, Nz, Nt),    # array size, in storage order
-                      (2, 1, 3, 4),        # storage dimension of the coordinates (x1, x2, x3, t)
+                      (2, 1, 3, 4),        # storage dimension of the coordinates (x1, x2, x3, s)
                       (2, 3, 4))           # Fourier dimensions, the real-to-complex one first
 ```
 
@@ -48,8 +50,8 @@ Fourier directions in its inner products and norms.
 | ReSolverFlowsBase asks for | `TensorProductGrid` returns |
 |---|---|
 | `size(g)` | the array size, in storage order |
-| `points(g; dealias=false)` | the collocation points in bounded directions, equispaced points on `[0, L)` in Fourier directions, shaped for broadcasting |
-| `wavenumber_scale(g, dim)` | `2π/L` for a Fourier direction, one for a bounded one |
+| `points(g; dealias=false)` | the collocation points in bounded directions, equispaced points on `[0, L)` in Fourier directions and on `[0, 2π)` for the phase, shaped for broadcasting |
+| `wavenumber_scale(g, dim)` | `2π/L` for a spatial Fourier direction, one for the phase and for a bounded direction |
 | `weights(g)` | the tensor-product quadrature weights |
 | `derivative_matrix(g, dim, Val(order), Direct())` | `D₁` or `D₂` of a bounded direction, used for derivatives and Laplacians |
 | `derivative_matrix(g, dim, Val(order), DiscreteAdjoint())` | `D₁⁺` or `D₂⁺` |

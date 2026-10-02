@@ -2,7 +2,8 @@
 # periodic Fourier directions, implementing the ReSolverFlowsBase.AbstractGrid interface.
 #
 # Bounded data are stored as tuples, one entry per inhomogeneous storage dimension, in increasing
-# storage order; wavenumber scales follow ReSolverFlowsBase.fft_storage_dims. The grid owns
+# storage order; wavenumber scales follow ReSolverFlowsBase.spatial_fft_storage_dims, the phase
+# direction s ∈ [0, 2π) having scale one by construction. The grid owns
 # geometry, quadrature and differentiation; boundary conditions belong to the basis or residual.
 
 
@@ -41,9 +42,10 @@ end
 Tensor-product grid with bounded directions discretised by the tuples of collocation points `xs`,
 first- and second-derivative matrices `D₁`, `D₂`, their quadrature-weighted discrete adjoints
 `D₁⁺`, `D₂⁺` and quadrature weights `ws`, one entry per bounded direction in increasing storage
-order. `wavenumber_scales` holds the scale `2π/L` of each Fourier direction, in `fft_dims` order.
-`grid_size` is the array size in storage order and `axes` maps the coordinates `(x1, x2, x3, t)`
-to storage dimensions, with `nothing` for an absent coordinate. The scalar type is that of the
+order. `wavenumber_scales` holds the scale `2π/L` of each spatial Fourier direction, in `fft_dims`
+order; the time phase `s ∈ [0, 2π)` has scale one and no entry. `grid_size` is the array size in
+storage order and `axes` maps the coordinates `(x1, x2, x3, s)` to storage dimensions, with
+`nothing` for an absent coordinate. The scalar type is that of the
 weights; use `convert` to change it.
 """
 struct TensorProductGrid{T, S, D, AXES, FFT_DIMS, X, D1, D2, A1, A2, W, C} <:
@@ -54,7 +56,7 @@ struct TensorProductGrid{T, S, D, AXES, FFT_DIMS, X, D1, D2, A1, A2, W, C} <:
                   D₁⁺::A1 # discrete adjoints of D₁
                   D₂⁺::A2 # discrete adjoints of D₂
                    ws::W  # one-dimensional quadrature weights
-    wavenumber_scales::C  # scale 2π/L of each Fourier direction, in transform order
+    wavenumber_scales::C  # scale 2π/L of each spatial Fourier direction, in transform order
 
     function TensorProductGrid(               xs::Tuple,
                                               D₁::Tuple,
@@ -87,8 +89,9 @@ Base.eltype(::TensorProductGrid{T})         where {T} = T
 
 weights(g::TensorProductGrid) = TensorProductWeights(g.ws)
 
+# bounded directions and the phase s: one; spatial Fourier directions: 2π/L
 function wavenumber_scale(g::TensorProductGrid, storage_dim::Int)
-    i = findfirst(==(storage_dim), fft_storage_dims(g))
+    i = findfirst(==(storage_dim), spatial_fft_storage_dims(g))
     return isnothing(i) ? one(eltype(g)) : g.wavenumber_scales[i]
 end
 
@@ -97,7 +100,8 @@ end
     points(g::TensorProductGrid, homogeneous_size)
 
 One coordinate array per storage dimension, shaped for broadcasting. Bounded coordinates are the
-collocation points; a Fourier coordinate of scale `s` is equispaced on `[0, 2π/s)`. The Fourier
+collocation points; a Fourier coordinate of scale `k` is equispaced on `[0, 2π/k)`, the phase on
+`[0, 2π)`. The Fourier
 resolutions are those of `g`, their 3/2-rule padded sizes with `dealias=true`, or
 `homogeneous_size` in Fourier transform order.
 """
@@ -159,7 +163,7 @@ derivative_matrix(g::TensorProductGrid, dim::Integer, ::Val{2}, ::DiscreteAdjoin
 # position of a storage dimension among the bounded ones
 _bounded(g::TensorProductGrid, dim::Integer) = findfirst(==(dim), inhomogeneous_storage_dims(g))
 
-# the coordinate map (x1, x2, x3, t) -> storage dimension, from the type
+# the coordinate map (x1, x2, x3, s) -> storage dimension, from the type
 _axes(::AbstractGrid{T, D, AXES}) where {T, D, AXES} = AXES
 
 # storage size with the given Fourier resolutions, in transform order
